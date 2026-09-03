@@ -13,6 +13,11 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["DM Sans", "ui-sans-serif", "system-ui", "sans-serif"],
+        display: ["Space Grotesk", "DM Sans", "ui-sans-serif", "sans-serif"],
+        mono: ["IBM Plex Mono", "ui-monospace", "SFMono-Regular", "monospace"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
