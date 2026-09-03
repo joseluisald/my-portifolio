@@ -1,4 +1,5 @@
-import { useState, type FormEvent } from "react";
+import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -26,8 +27,30 @@ type Service = {
 
 const navItems = [
   { label: "Serviços", id: "servicos" },
+  { label: "Stacks", id: "stacks" },
   { label: "Como funciona", id: "processo" },
   { label: "Sobre", id: "sobre" },
+];
+
+const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20vim%20pela%20JLA%20Code%20e%20quero%20conversar%20sobre%20um%20projeto.";
+const stacksImageUrl = "https://cdn.builder.io/api/v1/image/assets%2F34c927a2b3bc48b0b51a4de5a6650545%2Fdb6548fba031449b829db4b5d6a17e43?format=webp&width=800&height=1200";
+
+const stackGroups = [
+  {
+    category: "Frontend",
+    description: "Interfaces rápidas, responsivas e pensadas para pessoas.",
+    technologies: ["React", "TypeScript", "Astro", "Tailwind CSS", "HTML5 & CSS3"],
+  },
+  {
+    category: "Backend & dados",
+    description: "A base segura para produtos que precisam crescer com consistência.",
+    technologies: ["Node.js", "Express", "PHP", "MySQL", "REST APIs & JSON"],
+  },
+  {
+    category: "Infraestrutura",
+    description: "Ambientes organizados para manter tudo disponível e protegido.",
+    technologies: ["Git & GitHub", "Linux", "Redes", "Backup", "Segurança"],
+  },
 ];
 
 const services: Service[] = [
@@ -79,6 +102,52 @@ function scrollToSection(id: string) {
   document.getElementById(id)?.scrollIntoView({ behavior: "smooth" });
 }
 
+function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; className?: string; delay?: number }) {
+  const shouldReduceMotion = useReducedMotion();
+
+  return (
+    <motion.div
+      className={className}
+      initial={shouldReduceMotion ? false : { opacity: 0, y: 24 }}
+      whileInView={shouldReduceMotion ? undefined : { opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.65, ease: [0.22, 1, 0.36, 1], delay }}
+    >
+      {children}
+    </motion.div>
+  );
+}
+
+function ParallaxBand() {
+  const sectionRef = useRef<HTMLElement>(null);
+  const shouldReduceMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: sectionRef, offset: ["start end", "end start"] });
+  const y = useTransform(scrollYProgress, [0, 1], shouldReduceMotion ? [0, 0] : [-70, 70]);
+
+  return (
+    <section ref={sectionRef} className="relative isolate overflow-hidden border-y border-primary/20 bg-[#172319] py-24 sm:py-32">
+      <div className="pointer-events-none absolute inset-0 -z-10 opacity-20 [background-image:radial-gradient(circle_at_center,hsl(var(--primary))_1px,transparent_1px)] [background-size:24px_24px]" />
+      <motion.div style={{ y }} className="pointer-events-none absolute -left-10 top-1/2 -z-10 -translate-y-1/2 whitespace-nowrap font-display text-[clamp(7rem,22vw,20rem)] font-bold leading-none tracking-[-0.12em] text-primary/[0.06]">
+        JLA CODE
+      </motion.div>
+      <div className="mx-auto max-w-7xl px-5 sm:px-8 lg:px-10">
+        <Reveal className="relative mx-auto max-w-4xl text-center">
+          <p className="section-kicker">/ tecnologia em movimento</p>
+          <h2 className="mt-6 font-display text-4xl font-semibold leading-[0.98] tracking-[-0.07em] text-foreground sm:text-6xl lg:text-7xl">
+            A melhor stack é a que faz o seu projeto <span className="text-primary">avançar.</span>
+          </h2>
+          <p className="mx-auto mt-7 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+            Ferramentas modernas, escolhas conscientes e uma implementação que não cria complexidade onde ela não precisa existir.
+          </p>
+          <button type="button" onClick={() => scrollToSection("contato")} className="group mt-9 inline-flex items-center gap-2 rounded-full border border-primary/50 px-5 py-3 text-sm font-bold text-foreground transition-colors hover:bg-primary hover:text-primary-foreground">
+            Encontrar a stack certa <ArrowUpRight className="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+          </button>
+        </Reveal>
+      </div>
+    </section>
+  );
+}
+
 function BrandMark() {
   return (
     <div className="flex items-center gap-3" aria-label="JLA Code">
@@ -96,6 +165,7 @@ function BrandMark() {
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const currentYear = new Date().getFullYear();
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -111,7 +181,7 @@ export default function Index() {
     <div className="min-h-screen overflow-x-hidden bg-background text-foreground">
       <header className="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl">
         <div className="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-          <button type="button" onClick={() => handleNavClick("inicio")}>
+          <button type="button" aria-label="Ir para o início" onClick={() => handleNavClick("inicio")}>
             <BrandMark />
           </button>
 
@@ -130,12 +200,12 @@ export default function Index() {
 
           <div className="hidden items-center gap-5 md:flex">
             <a
-              href="https://www.linkedin.com/in/joseluisaldrighi/"
+              href={whatsappUrl}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
             >
-              LinkedIn <ExternalLink className="h-3.5 w-3.5" />
+              WhatsApp <ArrowUpRight className="h-3.5 w-3.5" />
             </a>
             <button
               type="button"
@@ -170,13 +240,14 @@ export default function Index() {
                   {item.label}
                 </button>
               ))}
-              <button
-                type="button"
-                onClick={() => handleNavClick("contato")}
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noreferrer"
                 className="mt-3 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
               >
-                Vamos conversar <ArrowUpRight className="h-4 w-4" />
-              </button>
+                Falar no WhatsApp <ArrowUpRight className="h-4 w-4" />
+              </a>
             </div>
           </nav>
         )}
@@ -188,7 +259,7 @@ export default function Index() {
           <div className="pointer-events-none absolute -right-32 top-16 -z-10 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
           <div className="mx-auto max-w-7xl px-5 pb-14 pt-16 sm:px-8 sm:pt-24 lg:px-10 lg:pb-20 lg:pt-28">
             <div className="grid items-end gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
-              <div>
+              <Reveal>
                 <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-primary sm:text-xs">
                   <Sparkles className="h-3.5 w-3.5" />
                   Tecnologia com propósito
@@ -219,9 +290,9 @@ export default function Index() {
                     <ArrowDownRight className="h-4 w-4 transition-transform group-hover:translate-y-1" />
                   </button>
                 </div>
-              </div>
+              </Reveal>
 
-              <div className="relative mx-auto w-full max-w-[500px] lg:mb-1">
+              <Reveal delay={0.15} className="relative mx-auto w-full max-w-[500px] lg:mb-1">
                 <div className="absolute -inset-3 rounded-[28px] border border-primary/10" />
                 <div className="relative overflow-hidden rounded-[22px] border border-border bg-card shadow-2xl shadow-black/25">
                   <div className="flex items-center justify-between border-b border-border px-5 py-4">
@@ -245,13 +316,13 @@ export default function Index() {
                   </div>
                   <div className="flex items-center justify-between bg-primary px-5 py-3.5 text-primary-foreground sm:px-8">
                     <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]">feito para funcionar</span>
-                    <span className="font-mono text-[10px]">2024 — agora</span>
+                    <span className="font-mono text-[10px]">{currentYear} — agora</span>
                   </div>
                 </div>
-              </div>
+              </Reveal>
             </div>
 
-            <div className="mt-20 grid grid-cols-2 border-y border-border py-6 sm:grid-cols-4 sm:py-8">
+            <Reveal className="mt-20 grid grid-cols-2 border-y border-border py-6 sm:grid-cols-4 sm:py-8">
               {[
                 ["01", "visão técnica"],
                 ["02", "olhar humano"],
@@ -263,13 +334,13 @@ export default function Index() {
                   <span className="text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground sm:text-sm">{label}</span>
                 </div>
               ))}
-            </div>
+            </Reveal>
           </div>
         </section>
 
         <section id="servicos" className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
           <div className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-            <div>
+            <Reveal>
               <p className="section-kicker">/ o que eu faço</p>
               <h2 className="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl">
                 Tecnologia boa é a que deixa tudo mais <span className="text-primary">simples.</span>
@@ -281,13 +352,20 @@ export default function Index() {
                 <span className="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 text-primary"><ArrowDownRight className="h-4 w-4" /></span>
                 Soluções sob medida
               </div>
-            </div>
+            </Reveal>
 
             <div className="divide-y divide-border border-y border-border">
               {services.map((service) => {
                 const Icon = service.icon;
                 return (
-                  <article key={service.number} className="group grid gap-5 py-8 sm:grid-cols-[64px_1fr_auto] sm:gap-6 sm:py-10">
+                  <motion.article
+                    key={service.number}
+                    initial={{ opacity: 0, x: 18 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true, amount: 0.25 }}
+                    transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1], delay: Number(service.number) * 0.06 }}
+                    className="group grid gap-5 py-8 sm:grid-cols-[64px_1fr_auto] sm:gap-6 sm:py-10"
+                  >
                     <div className="flex items-start justify-between sm:block">
                       <span className="font-mono text-xs text-primary">{service.number}</span>
                       <Icon className="h-6 w-6 text-muted-foreground transition-colors group-hover:text-primary sm:mt-7" strokeWidth={1.5} />
@@ -302,12 +380,58 @@ export default function Index() {
                       </div>
                     </div>
                     <ArrowUpRight className="hidden h-5 w-5 text-border transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary sm:block" />
-                  </article>
+                  </motion.article>
                 );
               })}
             </div>
           </div>
         </section>
+
+        <section id="stacks" className="border-t border-border bg-card/40">
+          <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+            <div className="grid items-start gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+              <Reveal>
+                <p className="section-kicker">/ stacks que domino</p>
+                <h2 className="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl">
+                  A ferramenta muda. O cuidado com a <span className="text-primary">entrega</span> fica.
+                </h2>
+                <p className="mt-6 max-w-sm text-base leading-7 text-muted-foreground">
+                  A tecnologia é escolhida de acordo com o problema — não o contrário. Este é o repertório que uso para criar, conectar e manter soluções digitais.
+                </p>
+                <div className="mt-9 overflow-hidden rounded-2xl border border-border bg-card">
+                  <div className="relative aspect-[16/9] overflow-hidden">
+                    <img src={stacksImageUrl} alt="Exemplo visual das tecnologias usadas pela JLA Code" className="h-full w-full object-cover object-top opacity-75 grayscale transition duration-700 hover:scale-105 hover:grayscale-0" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
+                    <span className="absolute bottom-4 left-4 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground">ferramentas para criar melhor</span>
+                  </div>
+                </div>
+              </Reveal>
+
+              <div className="space-y-0 divide-y divide-border border-y border-border">
+                {stackGroups.map((group, index) => (
+                  <Reveal key={group.category} delay={index * 0.08} className="py-8 sm:py-9">
+                    <div className="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
+                      <div className="min-w-[145px]">
+                        <span className="font-mono text-xs text-primary">0{index + 1}</span>
+                        <h3 className="mt-3 font-display text-2xl font-semibold tracking-[-0.05em]">{group.category}</h3>
+                      </div>
+                      <div className="max-w-sm sm:pt-1">
+                        <p className="text-sm leading-6 text-muted-foreground">{group.description}</p>
+                        <div className="mt-5 flex flex-wrap gap-2">
+                          {group.technologies.map((technology) => (
+                            <span key={technology} className="rounded-full border border-border bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-foreground/80">{technology}</span>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </Reveal>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <ParallaxBand />
 
         <section id="processo" className="border-y border-border bg-card/50">
           <div className="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
@@ -393,9 +517,14 @@ export default function Index() {
               <p className="mt-7 max-w-md text-base leading-7 text-primary-foreground/70 sm:text-lg">
                 Me conte um pouco sobre o que você precisa. A primeira conversa é sem compromisso e já pode clarear bastante o caminho.
               </p>
-              <div className="mt-10 flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-primary-foreground/60">
-                <span className="h-2 w-2 rounded-full bg-primary-foreground" />
-                Responderei assim que possível
+              <div className="mt-10 flex flex-col items-start gap-5">
+                <div className="flex items-center gap-3 font-mono text-xs uppercase tracking-[0.12em] text-primary-foreground/60">
+                  <span className="h-2 w-2 rounded-full bg-primary-foreground" />
+                  Responderei assim que possível
+                </div>
+                <a href={whatsappUrl} target="_blank" rel="noreferrer" className="inline-flex items-center gap-2 text-sm font-bold text-primary-foreground underline decoration-primary-foreground/40 underline-offset-8 transition-opacity hover:opacity-70">
+                  Ou fale diretamente pelo WhatsApp <ArrowUpRight className="h-4 w-4" />
+                </a>
               </div>
             </div>
 
@@ -435,7 +564,7 @@ export default function Index() {
       <footer className="bg-background">
         <div className="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
           <BrandMark />
-          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">desenvolvimento com intenção © 2024</p>
+          <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">desenvolvimento com intenção © {currentYear}</p>
           <div className="flex items-center gap-5">
             <a href="https://www.linkedin.com/in/joseluisaldrighi/" target="_blank" rel="noreferrer" className="text-xs font-semibold text-muted-foreground hover:text-primary">LinkedIn</a>
             <button type="button" onClick={() => handleNavClick("inicio")} className="flex items-center gap-1 text-xs font-semibold text-muted-foreground hover:text-primary">Voltar ao topo <ChevronDown className="h-3.5 w-3.5 rotate-180" /></button>
