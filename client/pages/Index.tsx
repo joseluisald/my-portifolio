@@ -1,4 +1,4 @@
-import { useRef, useState, type FormEvent, type ReactNode } from "react";
+import { useRef, useState, type FormEvent, type PointerEvent, type ReactNode } from "react";
 import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
 import {
   ArrowDownRight,
@@ -33,7 +33,6 @@ const navItems = [
 ];
 
 const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20vim%20pela%20JLA%20Code%20e%20quero%20conversar%20sobre%20um%20projeto.";
-const stacksImageUrl = "https://cdn.builder.io/api/v1/image/assets%2F34c927a2b3bc48b0b51a4de5a6650545%2Fdb6548fba031449b829db4b5d6a17e43?format=webp&width=800&height=1200";
 
 const stackGroups = [
   {
@@ -51,6 +50,19 @@ const stackGroups = [
     description: "Ambientes organizados para manter tudo disponível e protegido.",
     technologies: ["Git & GitHub", "Linux", "Redes", "Backup", "Segurança"],
   },
+];
+
+const neuralNodes = [
+  [82, 136], [210, 82], [340, 174], [488, 94], [638, 150], [812, 76], [920, 190],
+  [122, 334], [270, 282], [424, 362], [586, 270], [748, 356], [900, 316],
+  [196, 548], [370, 488], [542, 564], [706, 492], [858, 552],
+];
+
+const neuralConnections = [
+  [0, 1], [0, 7], [1, 2], [1, 8], [2, 3], [2, 8], [2, 9], [3, 4], [3, 9],
+  [4, 5], [4, 10], [5, 6], [5, 12], [7, 8], [7, 13], [8, 9], [8, 14],
+  [9, 10], [9, 14], [9, 15], [10, 11], [10, 15], [11, 12], [11, 16],
+  [12, 17], [13, 14], [14, 15], [15, 16], [16, 17],
 ];
 
 const services: Service[] = [
@@ -118,6 +130,56 @@ function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; 
   );
 }
 
+function NeuralNetworkBackdrop({ pointer }: { pointer: { x: number; y: number } }) {
+  return (
+    <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_42%,rgba(183,243,77,0.12),transparent_32%),radial-gradient(circle_at_20%_70%,rgba(64,123,255,0.1),transparent_30%)]" />
+      <motion.svg
+        viewBox="0 0 1000 650"
+        preserveAspectRatio="xMidYMid slice"
+        className="absolute -inset-[7%] h-[114%] w-[114%] opacity-80"
+        style={{ x: pointer.x * 15, y: pointer.y * 10 }}
+      >
+        <defs>
+          <filter id="neural-glow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="4" result="blur" />
+            <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+          </filter>
+        </defs>
+        <g stroke="hsl(var(--primary))" strokeWidth="1" fill="none">
+          {neuralConnections.map(([from, to], index) => (
+            <motion.line
+              key={`${from}-${to}`}
+              x1={neuralNodes[from][0]}
+              y1={neuralNodes[from][1]}
+              x2={neuralNodes[to][0]}
+              y2={neuralNodes[to][1]}
+              strokeDasharray="4 14"
+              initial={{ opacity: 0.1, strokeDashoffset: 0 }}
+              animate={{ opacity: [0.1, 0.36, 0.1], strokeDashoffset: [0, -36] }}
+              transition={{ duration: 4 + (index % 4), repeat: Infinity, ease: "linear", delay: (index % 5) * 0.18 }}
+            />
+          ))}
+        </g>
+        <g fill="hsl(var(--primary))" filter="url(#neural-glow)">
+          {neuralNodes.map(([x, y], index) => (
+            <motion.circle
+              key={`${x}-${y}`}
+              cx={x}
+              cy={y}
+              r={index % 4 === 0 ? 4 : 2.5}
+              animate={{ opacity: [0.35, 0.95, 0.35], scale: [0.85, 1.18, 0.85] }}
+              transition={{ duration: 2.4 + (index % 4) * 0.35, repeat: Infinity, ease: "easeInOut", delay: (index % 6) * 0.22 }}
+              style={{ transformBox: "fill-box", transformOrigin: "center" }}
+            />
+          ))}
+        </g>
+      </motion.svg>
+      <div className="absolute left-[61%] top-[40%] h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
+    </div>
+  );
+}
+
 function ParallaxBand() {
   const sectionRef = useRef<HTMLElement>(null);
   const shouldReduceMotion = useReducedMotion();
@@ -165,7 +227,16 @@ function BrandMark() {
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [heroPointer, setHeroPointer] = useState({ x: 0, y: 0 });
   const currentYear = new Date().getFullYear();
+
+  function handleHeroPointerMove(event: PointerEvent<HTMLElement>) {
+    const bounds = event.currentTarget.getBoundingClientRect();
+    setHeroPointer({
+      x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 2,
+      y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 2,
+    });
+  }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -254,11 +325,11 @@ export default function Index() {
       </header>
 
       <main>
-        <section id="inicio" className="relative isolate overflow-hidden border-b border-border/60">
-          <div className="pointer-events-none absolute inset-0 -z-10 opacity-60 [background-image:linear-gradient(rgba(183,243,77,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(183,243,77,0.07)_1px,transparent_1px)] [background-size:64px_64px] [mask-image:linear-gradient(to_bottom,black,transparent_80%)]" />
+        <section id="inicio" onPointerMove={handleHeroPointerMove} onPointerLeave={() => setHeroPointer({ x: 0, y: 0 })} className="relative isolate overflow-hidden border-b border-border/60">
+          <NeuralNetworkBackdrop pointer={heroPointer} />
           <div className="pointer-events-none absolute -right-32 top-16 -z-10 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
           <div className="mx-auto max-w-7xl px-5 pb-14 pt-16 sm:px-8 sm:pt-24 lg:px-10 lg:pb-20 lg:pt-28">
-            <div className="grid items-end gap-14 lg:grid-cols-[1.08fr_0.92fr] lg:gap-12">
+            <div className="max-w-4xl">
               <Reveal>
                 <div className="mb-7 inline-flex items-center gap-2 rounded-full border border-primary/25 bg-primary/5 px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-primary sm:text-xs">
                   <Sparkles className="h-3.5 w-3.5" />
@@ -292,34 +363,6 @@ export default function Index() {
                 </div>
               </Reveal>
 
-              <Reveal delay={0.15} className="relative mx-auto w-full max-w-[500px] lg:mb-1">
-                <div className="absolute -inset-3 rounded-[28px] border border-primary/10" />
-                <div className="relative overflow-hidden rounded-[22px] border border-border bg-card shadow-2xl shadow-black/25">
-                  <div className="flex items-center justify-between border-b border-border px-5 py-4">
-                    <div className="flex items-center gap-2">
-                      <span className="h-2.5 w-2.5 rounded-full bg-primary" />
-                      <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground">jla-code / profile.tsx</span>
-                    </div>
-                    <Code2 className="h-4 w-4 text-muted-foreground" />
-                  </div>
-                  <div className="px-5 py-7 font-mono text-xs leading-7 sm:px-8 sm:py-9 sm:text-sm sm:leading-8">
-                    <div><span className="text-primary">const</span> <span className="text-foreground">jlaCode</span> = &#123;</div>
-                    <div className="pl-5"><span className="text-muted-foreground">nome:</span> <span className="text-primary">&quot;José Luis Aldrighi&quot;</span>,</div>
-                    <div className="pl-5"><span className="text-muted-foreground">foco:</span> [</div>
-                    <div className="pl-10"><span className="text-primary">&quot;web que conecta&quot;</span>,</div>
-                    <div className="pl-10"><span className="text-primary">&quot;tecnologia acessível&quot;</span>,</div>
-                    <div className="pl-10"><span className="text-primary">&quot;problemas resolvidos&quot;</span></div>
-                    <div className="pl-5">],</div>
-                    <div className="pl-5"><span className="text-muted-foreground">status:</span> <span className="inline-flex items-center gap-1.5 text-primary"><span className="h-1.5 w-1.5 rounded-full bg-primary" /> disponível</span></div>
-                    <div>&#125;;</div>
-                    <div className="mt-5 border-t border-border pt-5 text-muted-foreground"><span className="text-primary">export default</span> jlaCode;</div>
-                  </div>
-                  <div className="flex items-center justify-between bg-primary px-5 py-3.5 text-primary-foreground sm:px-8">
-                    <span className="font-mono text-[10px] font-bold uppercase tracking-[0.16em]">feito para funcionar</span>
-                    <span className="font-mono text-[10px]">{currentYear} — agora</span>
-                  </div>
-                </div>
-              </Reveal>
             </div>
 
             <Reveal className="mt-20 grid grid-cols-2 border-y border-border py-6 sm:grid-cols-4 sm:py-8">
@@ -398,13 +441,6 @@ export default function Index() {
                 <p className="mt-6 max-w-sm text-base leading-7 text-muted-foreground">
                   A tecnologia é escolhida de acordo com o problema — não o contrário. Este é o repertório que uso para criar, conectar e manter soluções digitais.
                 </p>
-                <div className="mt-9 overflow-hidden rounded-2xl border border-border bg-card">
-                  <div className="relative aspect-[16/9] overflow-hidden">
-                    <img src={stacksImageUrl} alt="Exemplo visual das tecnologias usadas pela JLA Code" className="h-full w-full object-cover object-top opacity-75 grayscale transition duration-700 hover:scale-105 hover:grayscale-0" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-card via-transparent to-transparent" />
-                    <span className="absolute bottom-4 left-4 font-mono text-[10px] uppercase tracking-[0.15em] text-foreground">ferramentas para criar melhor</span>
-                  </div>
-                </div>
               </Reveal>
 
               <div className="space-y-0 divide-y divide-border border-y border-border">

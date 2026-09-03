@@ -76,6 +76,27 @@
 
   html {
     scroll-behavior: smooth;
+    scrollbar-color: hsl(var(--primary)) hsl(var(--card));
+    scrollbar-width: thin;
+  }
+
+  ::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    border: 3px solid hsl(var(--background));
+    border-radius: 999px;
+    background: hsl(var(--primary));
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--foreground));
   }
 
   body {
