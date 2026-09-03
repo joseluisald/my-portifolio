@@ -1,5 +1,5 @@
 import { useRef, useState, type FormEvent, type PointerEvent, type ReactNode } from "react";
-import { motion, useReducedMotion, useScroll, useTransform } from "framer-motion";
+import { motion, type MotionValue, useMotionValue, useReducedMotion, useScroll, useSpring, useTransform } from "framer-motion";
 import {
   ArrowDownRight,
   ArrowUpRight,
@@ -130,7 +130,15 @@ function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; 
   );
 }
 
-function NeuralNetworkBG({ pointer }: { pointer: { x: number; y: number } }) {
+function NeuralNetworkBG({ pointerX, pointerY }: { pointerX: MotionValue<number>; pointerY: MotionValue<number> }) {
+  const shouldReduceMotion = useReducedMotion();
+  const farX = useTransform(pointerX, (value) => value * 6);
+  const farY = useTransform(pointerY, (value) => value * 4);
+  const midX = useTransform(pointerX, (value) => value * 12);
+  const midY = useTransform(pointerY, (value) => value * 8);
+  const nearX = useTransform(pointerX, (value) => value * 20);
+  const nearY = useTransform(pointerY, (value) => value * 14);
+
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_42%,rgba(183,243,77,0.12),transparent_32%),radial-gradient(circle_at_20%_70%,rgba(64,123,255,0.1),transparent_30%)]" />
@@ -138,7 +146,6 @@ function NeuralNetworkBG({ pointer }: { pointer: { x: number; y: number } }) {
         viewBox="0 0 1000 650"
         preserveAspectRatio="xMidYMid slice"
         className="absolute -inset-[7%] h-[114%] w-[114%] opacity-80"
-        style={{ x: pointer.x * 15, y: pointer.y * 10 }}
       >
         <defs>
           <filter id="neural-glow" x="-100%" y="-100%" width="300%" height="300%">
@@ -146,34 +153,42 @@ function NeuralNetworkBG({ pointer }: { pointer: { x: number; y: number } }) {
             <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
           </filter>
         </defs>
-        <g stroke="hsl(var(--primary))" strokeWidth="1" fill="none">
-          {neuralConnections.map(([from, to], index) => (
-            <motion.line
-              key={`${from}-${to}`}
-              x1={neuralNodes[from][0]}
-              y1={neuralNodes[from][1]}
-              x2={neuralNodes[to][0]}
-              y2={neuralNodes[to][1]}
-              strokeDasharray="4 14"
-              initial={{ opacity: 0.1, strokeDashoffset: 0 }}
-              animate={{ opacity: [0.1, 0.36, 0.1], strokeDashoffset: [0, -36] }}
-              transition={{ duration: 4 + (index % 4), repeat: Infinity, ease: "linear", delay: (index % 5) * 0.18 }}
-            />
-          ))}
-        </g>
-        <g fill="hsl(var(--primary))" filter="url(#neural-glow)">
+        <motion.g style={{ x: farX, y: farY }} opacity={0.28}>
+          <circle cx="74" cy="92" r="1.5" fill="hsl(var(--primary))" />
+          <circle cx="690" cy="86" r="2" fill="hsl(var(--primary))" />
+          <circle cx="944" cy="440" r="1.5" fill="hsl(var(--primary))" />
+          <circle cx="82" cy="506" r="2" fill="hsl(var(--primary))" />
+        </motion.g>
+        <motion.g style={{ x: midX, y: midY }}>
+          <g stroke="hsl(var(--primary))" strokeWidth="1" fill="none">
+            {neuralConnections.map(([from, to], index) => (
+              <motion.line
+                key={`${from}-${to}`}
+                x1={neuralNodes[from][0]}
+                y1={neuralNodes[from][1]}
+                x2={neuralNodes[to][0]}
+                y2={neuralNodes[to][1]}
+                strokeDasharray="4 14"
+                initial={{ opacity: 0.1, strokeDashoffset: 0 }}
+                animate={shouldReduceMotion ? undefined : { opacity: [0.1, 0.36, 0.1], strokeDashoffset: [0, -36] }}
+                transition={{ duration: 4 + (index % 4), repeat: Infinity, ease: "linear", delay: (index % 5) * 0.18 }}
+              />
+            ))}
+          </g>
+        </motion.g>
+        <motion.g style={{ x: nearX, y: nearY }} fill="hsl(var(--primary))" filter="url(#neural-glow)">
           {neuralNodes.map(([x, y], index) => (
             <motion.circle
               key={`${x}-${y}`}
               cx={x}
               cy={y}
               r={index % 4 === 0 ? 4 : 2.5}
-              animate={{ opacity: [0.35, 0.95, 0.35], scale: [0.85, 1.18, 0.85] }}
+              animate={shouldReduceMotion ? undefined : { opacity: [0.35, 0.95, 0.35], scale: [0.85, 1.18, 0.85] }}
               transition={{ duration: 2.4 + (index % 4) * 0.35, repeat: Infinity, ease: "easeInOut", delay: (index % 6) * 0.22 }}
               style={{ transformBox: "fill-box", transformOrigin: "center" }}
             />
           ))}
-        </g>
+        </motion.g>
       </motion.svg>
       <div className="absolute left-[61%] top-[40%] h-40 w-40 rounded-full bg-primary/10 blur-3xl" />
     </div>
@@ -227,15 +242,21 @@ function BrandMark() {
 export default function Index() {
   const [menuOpen, setMenuOpen] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [heroPointer, setHeroPointer] = useState({ x: 0, y: 0 });
+  const heroTargetX = useMotionValue(0);
+  const heroTargetY = useMotionValue(0);
+  const heroPointerX = useSpring(heroTargetX, { stiffness: 85, damping: 24, mass: 0.7 });
+  const heroPointerY = useSpring(heroTargetY, { stiffness: 85, damping: 24, mass: 0.7 });
   const currentYear = new Date().getFullYear();
 
   function handleHeroPointerMove(event: PointerEvent<HTMLElement>) {
     const bounds = event.currentTarget.getBoundingClientRect();
-    setHeroPointer({
-      x: ((event.clientX - bounds.left) / bounds.width - 0.5) * 2,
-      y: ((event.clientY - bounds.top) / bounds.height - 0.5) * 2,
-    });
+    heroTargetX.set(((event.clientX - bounds.left) / bounds.width - 0.5) * 2);
+    heroTargetY.set(((event.clientY - bounds.top) / bounds.height - 0.5) * 2);
+  }
+
+  function handleHeroPointerLeave() {
+    heroTargetX.set(0);
+    heroTargetY.set(0);
   }
 
   function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -325,8 +346,8 @@ export default function Index() {
       </header>
 
       <main>
-        <section id="inicio" onPointerMove={handleHeroPointerMove} onPointerLeave={() => setHeroPointer({ x: 0, y: 0 })} className="relative isolate overflow-hidden border-b border-border/60">
-          <NeuralNetworkBG pointer={heroPointer} />
+        <section id="inicio" onPointerMove={handleHeroPointerMove} onPointerLeave={handleHeroPointerLeave} className="relative isolate overflow-hidden border-b border-border/60">
+          <NeuralNetworkBG pointerX={heroPointerX} pointerY={heroPointerY} />
           <div className="pointer-events-none absolute -right-32 top-16 -z-10 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
           <div className="mx-auto max-w-7xl px-5 pb-14 pt-16 sm:px-8 sm:pt-24 lg:px-10 lg:pb-20 lg:pt-28">
             <div className="max-w-4xl">
