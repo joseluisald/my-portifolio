@@ -24,12 +24,12 @@
     "strictNullChecks": false,
 
     "paths": {
-      "@/*": ["./client/*"]
+      "@/*": ["./src/*"]
     }
   },
   "include": [
-    "client/**/*",
-    "vite.config.ts"
+    "src/**/*",
+    "astro.config.mjs"
   ],
   "exclude": ["node_modules", "dist"]
 }

@@ -1,0 +1,60 @@
+---
+import { Cpu, ExternalLink } from "lucide-astro";
+---
+
+<section id="sobre" class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+  <div class="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
+    <!-- Profile Card Badge -->
+    <div class="relative mx-auto w-full max-w-md">
+      <div class="absolute -left-4 -top-4 h-20 w-20 border-l border-t border-primary/50"></div>
+      <div class="absolute -bottom-4 -right-4 h-20 w-20 border-b border-r border-primary/50"></div>
+      <div class="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-[#172319] via-card to-[#0b0f0c] p-6 sm:p-8 shadow-xl">
+        <div class="flex h-full flex-col justify-between">
+          <div class="flex items-center justify-between">
+            <span class="font-mono text-[10px] uppercase tracking-[0.18em] text-primary">sobre / jla</span>
+            <Cpu class="h-5 w-5 text-primary" stroke-width="1.5" />
+          </div>
+          <div>
+            <div class="mb-6 h-20 w-20 rounded-full border border-primary/40 bg-primary/10 p-2">
+              <div class="flex h-full w-full items-center justify-center rounded-full bg-primary font-display text-2xl font-bold tracking-[-0.08em] text-primary-foreground">
+                JL
+              </div>
+            </div>
+            <p class="font-display text-3xl font-semibold leading-none tracking-[-0.06em] text-foreground sm:text-4xl">
+              José Luis<br /><span class="text-primary">Aldrighi.</span>
+            </p>
+            <p class="mt-4 max-w-[220px] font-mono text-xs leading-5 text-muted-foreground">
+              desenvolvedor web<br />& técnico em informática
+            </p>
+          </div>
+          <div class="flex items-end justify-between border-t border-border pt-5">
+            <span class="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground">jla code</span>
+            <span class="text-2xl text-primary font-mono">↗</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Text Bio & LinkedIn -->
+    <div>
+      <p class="section-kicker">/ por trás do código</p>
+      <h2 class="mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl lg:text-6xl">
+        Técnica para construir. <span class="text-primary">Curiosidade</span> para ir além.
+      </h2>
+      <p class="mt-7 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+        A JLA Code nasce da vontade de usar a tecnologia de um jeito mais próximo, objetivo e útil. Sem termos complicados quando eles não ajudam. Sem soluções prontas quando o seu contexto pede outra coisa.
+      </p>
+      <p class="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+        É desenvolvimento com visão de negócio e suporte técnico com atenção aos detalhes — uma parceria para você avançar com mais confiança.
+      </p>
+      <a
+        href="https://www.linkedin.com/in/joseluisaldrighi/"
+        target="_blank"
+        rel="noreferrer"
+        class="mt-8 inline-flex items-center gap-2 border-b border-primary pb-2 text-sm font-bold text-foreground transition-colors hover:text-primary"
+      >
+        Conheça minha trajetória <ExternalLink class="h-4 w-4" />
+      </a>
+    </div>
+  </div>
+</section>

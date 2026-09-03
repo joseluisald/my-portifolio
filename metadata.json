@@ -1,0 +1,6 @@
+{
+  "name": "JLA Code — Código que resolve",
+  "description": "JLA Code — desenvolvimento web e suporte técnico para transformar ideias em soluções digitais que funcionam.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
