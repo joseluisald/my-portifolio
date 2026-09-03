@@ -130,7 +130,7 @@ function Reveal({ children, className = "", delay = 0 }: { children: ReactNode; 
   );
 }
 
-function NeuralNetworkBackdrop({ pointer }: { pointer: { x: number; y: number } }) {
+function NeuralNetworkBG({ pointer }: { pointer: { x: number; y: number } }) {
   return (
     <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden" aria-hidden="true">
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_65%_42%,rgba(183,243,77,0.12),transparent_32%),radial-gradient(circle_at_20%_70%,rgba(64,123,255,0.1),transparent_30%)]" />
@@ -326,7 +326,7 @@ export default function Index() {
 
       <main>
         <section id="inicio" onPointerMove={handleHeroPointerMove} onPointerLeave={() => setHeroPointer({ x: 0, y: 0 })} className="relative isolate overflow-hidden border-b border-border/60">
-          <NeuralNetworkBackdrop pointer={heroPointer} />
+          <NeuralNetworkBG pointer={heroPointer} />
           <div className="pointer-events-none absolute -right-32 top-16 -z-10 h-96 w-96 rounded-full bg-primary/10 blur-[120px]" />
           <div className="mx-auto max-w-7xl px-5 pb-14 pt-16 sm:px-8 sm:pt-24 lg:px-10 lg:pb-20 lg:pt-28">
             <div className="max-w-4xl">
