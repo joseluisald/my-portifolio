@@ -1,0 +1,76 @@
+---
+import NeuralNetwork from "./NeuralNetwork.astro";
+import Badge from "./ui/Badge.astro";
+import { ArrowDownRight, ArrowUpRight, Sparkles } from "lucide-astro";
+
+const metrics = [
+  ["01", "visão técnica"],
+  ["02", "olhar humano"],
+  ["03", "solução prática"],
+  ["04", "parceria real"],
+];
+---
+
+<section id="inicio" class="relative isolate overflow-hidden border-b border-border/60">
+  <NeuralNetwork />
+
+  <div class="pointer-events-none absolute -right-32 top-16 -z-10 h-96 w-96 rounded-full bg-primary/10 blur-[120px]"></div>
+
+  <div class="mx-auto max-w-7xl px-5 pb-14 pt-16 sm:px-8 sm:pt-24 lg:px-10 lg:pb-20 lg:pt-28">
+    <div class="max-w-4xl">
+      <!-- Tag / Kicker -->
+      <Badge variant="kicker" className="mb-7">
+        <Sparkles class="h-3.5 w-3.5" />
+        Tecnologia com propósito
+      </Badge>
+
+      <!-- Main Headline -->
+      <h1 class="max-w-4xl font-display text-[3.5rem] font-semibold leading-[0.94] tracking-[-0.075em] text-foreground sm:text-7xl lg:text-[6.5rem]">
+        Código que <span class="text-primary">resolve.</span>
+        <br />
+        Presença que <span class="text-muted-foreground">cresce.</span>
+      </h1>
+
+      <!-- Subtitle -->
+      <p class="mt-8 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg sm:leading-8">
+        Desenvolvimento web e suporte técnico para transformar ideias em soluções digitais que funcionam de verdade — do primeiro clique ao próximo nível.
+      </p>
+
+      <!-- Actions -->
+      <div class="mt-9 flex flex-col items-start gap-4 sm:flex-row sm:items-center">
+        <a
+          href="#contato"
+          class="group inline-flex items-center gap-3 rounded-full bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground transition-all hover:-translate-y-1 hover:shadow-[0_12px_32px_rgba(183,243,77,0.18)]"
+        >
+          Tirar ideia do papel
+          <ArrowUpRight class="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+        </a>
+        <a
+          href="#servicos"
+          class="group inline-flex items-center gap-2 px-2 py-2 text-sm font-semibold text-foreground transition-colors hover:text-primary"
+        >
+          Explorar serviços
+          <ArrowDownRight class="h-4 w-4 transition-transform group-hover:translate-y-1" />
+        </a>
+      </div>
+    </div>
+
+    <!-- 4 Value Props -->
+    <div class="mt-20 grid grid-cols-2 border-y border-border py-6 sm:grid-cols-4 sm:py-8">
+      {
+        metrics.map(([number, label], index) => (
+          <div
+            class={`flex items-center gap-3 px-3 py-2 sm:px-5 ${
+              index > 1 ? "border-t border-border sm:border-t-0" : ""
+            } ${index % 2 === 1 ? "sm:border-l" : ""}`}
+          >
+            <span class="font-mono text-xs text-primary">{number}</span>
+            <span class="text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground sm:text-sm">
+              {label}
+            </span>
+          </div>
+        ))
+      }
+    </div>
+  </div>
+</section>

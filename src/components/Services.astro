@@ -1,0 +1,85 @@
+---
+import { ArrowDownRight, ArrowUpRight, Check, Globe2, Layers3, Wrench } from "lucide-astro";
+
+const services = [
+  {
+    number: "01",
+    icon: Globe2,
+    title: "Desenvolvimento web",
+    description:
+      "Sites e sistemas que traduzem sua ideia em uma experiência digital rápida, clara e pronta para crescer.",
+    items: ["Sites institucionais", "Landing pages", "Sistemas sob medida"],
+  },
+  {
+    number: "02",
+    icon: Wrench,
+    title: "Suporte técnico",
+    description:
+      "Tecnologia funcionando sem complicação para você trabalhar com segurança, performance e tranquilidade.",
+    items: ["Diagnóstico e manutenção", "Configuração de equipamentos", "Orientação para sua rotina"],
+  },
+  {
+    number: "03",
+    icon: Layers3,
+    title: "Estratégia digital",
+    description:
+      "Um olhar técnico e humano para organizar sua presença online e transformar objetivos em próximos passos.",
+    items: ["Arquitetura de soluções", "Otimização de presença", "Consultoria prática"],
+  },
+];
+---
+
+<section id="servicos" class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+  <div class="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+    <div>
+      <p class="section-kicker">/ o que eu faço</p>
+      <h2 class="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl">
+        Tecnologia boa é a que deixa tudo mais <span class="text-primary">simples.</span>
+      </h2>
+      <p class="mt-6 max-w-sm text-base leading-7 text-muted-foreground">
+        Cada projeto começa com uma pergunta: como a tecnologia pode trabalhar melhor a favor de você?
+      </p>
+      <div class="mt-9 flex items-center gap-3 text-sm font-semibold text-foreground">
+        <span class="flex h-9 w-9 items-center justify-center rounded-full border border-primary/40 text-primary">
+          <ArrowDownRight class="h-4 w-4" />
+        </span>
+        Soluções sob medida
+      </div>
+    </div>
+
+    <div class="divide-y divide-border border-y border-border">
+      {
+        services.map((service) => {
+          const IconComponent = service.icon;
+          return (
+            <article class="group grid gap-5 py-8 sm:grid-cols-[64px_1fr_auto] sm:gap-6 sm:py-10 transition-colors">
+              <div class="flex items-start justify-between sm:block">
+                <span class="font-mono text-xs text-primary">{service.number}</span>
+                <div class="text-muted-foreground transition-colors group-hover:text-primary sm:mt-7">
+                  <IconComponent class="h-6 w-6" stroke-width="1.5" />
+                </div>
+              </div>
+              <div>
+                <h3 class="font-display text-2xl font-semibold tracking-[-0.04em] text-foreground">
+                  {service.title}
+                </h3>
+                <p class="mt-3 max-w-lg text-sm leading-6 text-muted-foreground">
+                  {service.description}
+                </p>
+                <div class="mt-5 flex flex-wrap gap-x-5 gap-y-2">
+                  {service.items.map((item) => (
+                    <span class="inline-flex items-center gap-1.5 text-xs font-medium text-foreground/80">
+                      <Check class="h-3.5 w-3.5 text-primary" />
+                      {item}
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <ArrowUpRight class="hidden h-5 w-5 text-border transition-all group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:text-primary sm:block" />
+            </article>
+          );
+        })
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,58 @@
+---
+interface Props {
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link" | "pillPrimary" | "pillOutline";
+  size?: "default" | "sm" | "lg" | "icon" | "custom";
+  className?: string;
+  href?: string;
+  target?: string;
+  rel?: string;
+  type?: "button" | "submit" | "reset";
+  [key: string]: any;
+}
+
+const {
+  variant = "default",
+  size = "default",
+  className = "",
+  href,
+  target,
+  rel,
+  type = "button",
+  ...rest
+} = Astro.props;
+
+const baseStyles = "inline-flex items-center justify-center font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 select-none cursor-pointer";
+
+const variants: Record<string, string> = {
+  default: "bg-primary text-primary-foreground font-semibold hover:bg-primary/90 shadow-sm",
+  destructive: "bg-destructive text-destructive-foreground hover:bg-destructive/90 shadow-sm",
+  outline: "border border-border bg-transparent hover:bg-card hover:text-primary text-foreground",
+  secondary: "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+  ghost: "hover:bg-card hover:text-foreground text-muted-foreground",
+  link: "text-primary underline-offset-4 hover:underline",
+  pillPrimary: "rounded-full bg-primary text-primary-foreground font-bold hover:-translate-y-0.5 hover:shadow-[0_12px_32px_rgba(183,243,77,0.18)] transition-all",
+  pillOutline: "rounded-full border border-primary/50 text-foreground font-bold hover:bg-primary hover:text-primary-foreground transition-colors",
+};
+
+const sizes: Record<string, string> = {
+  default: "h-10 px-4 py-2 text-sm rounded-md",
+  sm: "h-9 rounded-md px-3 text-xs",
+  lg: "h-11 rounded-md px-8 text-base",
+  icon: "h-10 w-10 rounded-md",
+  custom: "",
+};
+
+const computedClass = `${baseStyles} ${variants[variant] || variants.default} ${sizes[size] || sizes.default} ${className}`.trim();
+---
+
+{
+  href ? (
+    <a href={href} target={target} rel={rel} class={computedClass} {...rest}>
+      <slot />
+    </a>
+  ) : (
+    <button type={type} class={computedClass} {...rest}>
+      <slot />
+    </button>
+  )
+}

@@ -1,0 +1,31 @@
+{
+  "name": "jla-code",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview --host 0.0.0.0 --port 3000",
+    "lint": "tsc --noEmit",
+    "format.fix": "prettier --write ."
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/alpinejs": "^3.13.11",
+    "@types/node": "^26.1.1",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "prettier": "^3.9.6",
+    "tailwind-merge": "^2.6.1",
+    "tailwindcss": "^4.3.3",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@astrojs/alpinejs": "^1.0.0",
+    "@astrojs/tailwind": "^6.0.2",
+    "@tailwindcss/vite": "^4.3.3",
+    "alpinejs": "^3.17.1",
+    "astro": "^7.3.1",
+    "lucide-astro": "^0.556.0"
+  }
+}

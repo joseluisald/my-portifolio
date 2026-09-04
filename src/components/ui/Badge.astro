@@ -1,0 +1,30 @@
+---
+interface Props {
+  variant?: "default" | "secondary" | "destructive" | "outline" | "kicker" | "tech";
+  className?: string;
+  [key: string]: any;
+}
+
+const {
+  variant = "default",
+  className = "",
+  ...rest
+} = Astro.props;
+
+const baseStyles = "inline-flex items-center font-semibold transition-colors";
+
+const variants: Record<string, string> = {
+  default: "border-transparent bg-primary text-primary-foreground rounded-full px-2.5 py-0.5 text-xs",
+  secondary: "border-transparent bg-secondary text-secondary-foreground rounded-full px-2.5 py-0.5 text-xs",
+  destructive: "border-transparent bg-destructive text-destructive-foreground rounded-full px-2.5 py-0.5 text-xs",
+  outline: "text-foreground border border-border rounded-full px-2.5 py-0.5 text-xs",
+  kicker: "rounded-full border border-primary/25 bg-primary/5 px-3 py-1.5 font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-primary sm:text-xs gap-2",
+  tech: "rounded-full border border-border bg-background px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.08em] text-foreground/80",
+};
+
+const computedClass = `${baseStyles} ${variants[variant] || variants.default} ${className}`.trim();
+---
+
+<div class={computedClass} {...rest}>
+  <slot />
+</div>

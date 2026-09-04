@@ -1,0 +1,59 @@
+# Regras Padrão para Mecanismos de Busca (Google, Bing, Yahoo, etc.)
+User-agent: *
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/private/
+Disallow: /checkout/session/
+Disallow: /*?*utm_*
+Allow: /api/public/
+Allow: /static/media/
+
+# --------------------------------------------------------
+# Proteção & Controle de Crawlers de Inteligência Artificial / LLMs
+# --------------------------------------------------------
+# OpenAI GPTBot (Scraper da OpenAI usado para treinar modelos GPT / ChatGPT.)
+User-agent: GPTBot
+Disallow: /
+
+# ChatGPT Browsing (Acessos sob demanda quando um usuário pede ao ChatGPT para ler sua página.)
+User-agent: ChatGPT-User
+Allow: /
+
+# Google Extended (Crawler de treinamento para modelos Gemini e Vertex AI do Google.)
+User-agent: Google-Extended
+Disallow: /
+
+# Anthropic ClaudeBot (Coletor de dados da Anthropic para treinamento da família Claude.)
+User-agent: ClaudeBot
+Disallow: /
+
+# Claude Realtime Web (Requisições ao vivo do assistente Claude para pesquisar páginas na web.)
+User-agent: Claude-Web
+Allow: /
+
+# Perplexity AI Bot (Buscador inteligente da Perplexity para indexação e respostas com fontes.)
+User-agent: PerplexityBot
+Allow: /
+
+# Common Crawl (CCBot) (Base pública massiva usada por centenas de IAs para treinamento geral.)
+User-agent: CCBot
+Disallow: /
+
+# ByteDance Bytespider (Crawler do TikTok / Douyin para modelos multimodais de IA.)
+User-agent: Bytespider
+Disallow: /
+
+# Applebot Extended (Crawler da Apple para alimentar dados do Apple Intelligence.)
+User-agent: Applebot-Extended
+Disallow: /
+
+# Cohere AI (Crawler de LLMs empresariais da plataforma Cohere.)
+User-agent: cohere-ai
+Disallow: /
+
+# Meta External Agent (Crawler da Meta para modelos Llama e busca no WhatsApp/Instagram.)
+User-agent: Meta-ExternalAgent
+Disallow: /
+
+# Localização do Sitemap Oficial
+Sitemap: https://meusite.com/sitemap.xml
