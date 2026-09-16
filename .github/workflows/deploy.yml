@@ -1,0 +1,21 @@
+name: Deploy Automático na VPS
+
+on:
+  push:
+    branches:
+      - main # O deploy roda quando você fizer push na main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Executar script na VPS via SSH
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/${{ secrets.USERNAME }}/htdocs/jlacode.com.br
+            ./deploy.sh

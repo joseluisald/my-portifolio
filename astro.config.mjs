@@ -1,16 +1,30 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import alpinejs from '@astrojs/alpinejs';
+import compress from "astro-compress";
 
-// https://astro.build/config
 export default defineConfig({
-  server: {
-    host: '0.0.0.0',
-    port: 3000,
-  },
   vite: {
     plugins: [tailwindcss()],
+    build: {
+      target: "es2022",
+      minify: "esbuild",
+      cssMinify: "lightningcss",
+      sourcemap: false,
+      reportCompressedSize: false,
+    },
   },
-  integrations: [alpinejs()],
-  outDir: './dist',
+  build: {
+    inlineStylesheets: "always",
+  },
+  integrations: [
+    alpinejs(),
+    compress({
+      HTML: false,
+      CSS: true,
+      JavaScript: true,
+      Image: true,
+    }),
+  ],
+  outDir: "./dist",
 });
