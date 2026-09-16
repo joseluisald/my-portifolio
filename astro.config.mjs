@@ -1,6 +1,6 @@
-import { defineConfig } from 'astro/config';
-import tailwindcss from '@tailwindcss/vite';
-import alpinejs from '@astrojs/alpinejs';
+import { defineConfig } from "astro/config";
+import tailwindcss from "@tailwindcss/vite";
+import alpinejs from "@astrojs/alpinejs";
 import compress from "astro-compress";
 
 export default defineConfig({

@@ -29,5 +29,8 @@
     "astro-compress": "^2.4.3",
     "lucide-astro": "^0.556.0",
     "motion": "^13.4.0"
+  },
+  "allowScripts": {
+    "esbuild": true
   }
 }
