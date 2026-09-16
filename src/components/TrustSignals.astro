@@ -1,0 +1,58 @@
+---
+const signals = [
+  {
+    number: "01",
+    title: "Clareza desde o início",
+    description: "Você entende o caminho, as prioridades e o que será entregue antes do primeiro commit.",
+  },
+  {
+    number: "02",
+    title: "Solução sob medida",
+    description: "A ferramenta entra depois do problema. Cada escolha parte do seu contexto real.",
+  },
+  {
+    number: "03",
+    title: "Performance como base",
+    description: "Experiências rápidas, responsivas e pensadas para funcionar bem em qualquer tela.",
+  },
+  {
+    number: "04",
+    title: "Continuidade após a entrega",
+    description: "O projeto não termina quando vai ao ar. Você pode contar com evolução e suporte.",
+  },
+];
+---
+
+<section
+  aria-labelledby="confianca-titulo"
+  data-motion-section
+  class="border-b border-border bg-card/30"
+>
+  <div class="mx-auto max-w-7xl px-5 py-16 sm:px-8 lg:px-10 lg:py-20">
+    <div class="grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
+      <div data-motion-reveal>
+        <p class="section-kicker">/ o que você pode esperar</p>
+        <h2
+          id="confianca-titulo"
+          class="mt-5 max-w-sm font-display text-3xl font-semibold leading-[1.04] tracking-[-0.06em] sm:text-4xl"
+        >
+          Tecnologia que faz sentido para a sua <span class="text-primary">rotina.</span>
+        </h2>
+      </div>
+
+      <div data-motion-list class="grid gap-x-8 gap-y-8 sm:grid-cols-2">
+        {
+          signals.map((signal) => (
+            <article data-motion-item class="border-t border-border pt-4">
+              <span class="font-mono text-xs text-primary">{signal.number}</span>
+              <h3 class="mt-3 font-display text-xl font-semibold tracking-[-0.04em]">
+                {signal.title}
+              </h3>
+              <p class="mt-2 text-sm leading-6 text-muted-foreground">{signal.description}</p>
+            </article>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>

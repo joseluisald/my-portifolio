@@ -7,31 +7,31 @@ const services = [
     icon: Globe2,
     title: "Desenvolvimento web",
     description:
-      "Sites e sistemas que traduzem sua ideia em uma experiência digital rápida, clara e pronta para crescer.",
-    items: ["Sites institucionais", "Landing pages", "Sistemas sob medida"],
+      "Uma presença digital rápida, clara e preparada para transformar visitas em próximas conversas.",
+    items: ["Sites institucionais", "Landing pages", "Sistemas sob medida", "Performance e acessibilidade"],
   },
   {
     number: "02",
     icon: Wrench,
     title: "Suporte técnico",
     description:
-      "Tecnologia funcionando sem complicação para você trabalhar com segurança, performance e tranquilidade.",
-    items: ["Diagnóstico e manutenção", "Configuração de equipamentos", "Orientação para sua rotina"],
+      "Manutenção e orientação para manter seus equipamentos, ferramentas e rotina funcionando com mais segurança.",
+    items: ["Diagnóstico e manutenção", "Configuração de equipamentos", "Backup e segurança", "Orientação para sua rotina"],
   },
   {
     number: "03",
     icon: Layers3,
     title: "Estratégia digital",
     description:
-      "Um olhar técnico e humano para organizar sua presença online e transformar objetivos em próximos passos.",
-    items: ["Arquitetura de soluções", "Otimização de presença", "Consultoria prática"],
+      "Um plano simples para organizar sua presença online e decidir o próximo investimento com mais segurança.",
+    items: ["Arquitetura de soluções", "Otimização de presença", "Plano de próximos passos", "Consultoria prática"],
   },
 ];
 ---
 
-<section id="servicos" class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+<section id="servicos" data-motion-section class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
   <div class="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-    <div>
+    <div data-motion-reveal>
       <p class="section-kicker">/ o que eu faço</p>
       <h2 class="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl">
         Tecnologia boa é a que deixa tudo mais <span class="text-primary">simples.</span>
@@ -47,12 +47,12 @@ const services = [
       </div>
     </div>
 
-    <div class="divide-y divide-border border-y border-border">
+    <div data-motion-list class="divide-y divide-border border-y border-border">
       {
         services.map((service) => {
           const IconComponent = service.icon;
           return (
-            <article class="group grid gap-5 py-8 sm:grid-cols-[64px_1fr_auto] sm:gap-6 sm:py-10 transition-colors">
+            <article data-motion-item data-motion-tilt data-motion-spotlight class="group grid gap-5 py-8 sm:grid-cols-[64px_1fr_auto] sm:gap-6 sm:py-10 transition-colors">
               <div class="flex items-start justify-between sm:block">
                 <span class="font-mono text-xs text-primary">{service.number}</span>
                 <div class="text-muted-foreground transition-colors group-hover:text-primary sm:mt-7">

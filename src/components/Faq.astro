@@ -1,0 +1,86 @@
+---
+const faqs = [
+  {
+    question: "Você atende projetos de qualquer lugar?",
+    answer:
+      "Sim. A maior parte do trabalho pode acontecer de forma remota, com comunicação clara por mensagem e chamadas quando necessário. Também posso avaliar atendimentos presenciais conforme a região.",
+  },
+  {
+    question: "Quanto tempo leva para colocar um site no ar?",
+    answer:
+      "Depende do escopo, do conteúdo disponível e do nível de personalização. Depois da conversa inicial, você recebe uma estimativa de prazo baseada no que realmente precisa.",
+  },
+  {
+    question: "Você continua ajudando depois da entrega?",
+    answer:
+      "Sim. Posso acompanhar a evolução do projeto, fazer ajustes, cuidar da manutenção e orientar você para usar a solução com mais autonomia.",
+  },
+  {
+    question: "Preciso saber exatamente o que contratar?",
+    answer:
+      "Não. A primeira conversa serve justamente para organizar o cenário, entender o objetivo e indicar o próximo passo mais simples.",
+  },
+  {
+    question: "O projeto pode começar pequeno?",
+    answer:
+      "Pode. A solução pode nascer com o essencial e evoluir por etapas, evitando investimento e complexidade antes da hora.",
+  },
+];
+---
+
+<section id="duvidas" aria-labelledby="faq-titulo" data-motion-section class="border-t border-border">
+  <div class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+    <div class="grid gap-12 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+      <div data-motion-reveal>
+        <p class="section-kicker">/ perguntas frequentes</p>
+        <h2
+          id="faq-titulo"
+          class="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl"
+        >
+          Antes de começar, vamos deixar tudo mais <span class="text-primary">claro.</span>
+        </h2>
+        <p class="mt-6 max-w-sm text-base leading-7 text-muted-foreground">
+          Se a sua dúvida não estiver aqui, você pode levar a pergunta direto para a nossa conversa.
+        </p>
+        <a
+          href="#contato"
+          class="mt-8 inline-flex items-center gap-2 text-sm font-bold text-foreground underline decoration-primary underline-offset-8 transition-colors hover:text-primary"
+        >
+          Ainda tenho uma dúvida <span aria-hidden="true">↗</span>
+        </a>
+      </div>
+
+      <div data-motion-list class="divide-y divide-border border-y border-border">
+        {
+          faqs.map((faq) => (
+            <details data-motion-item class="group py-5 first:pt-0 last:pb-0">
+              <summary class="flex cursor-pointer list-none items-center justify-between gap-6 py-1 font-display text-lg font-semibold tracking-[-0.03em] marker:hidden">
+                <span>{faq.question}</span>
+                <span
+                  class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-border font-mono text-lg font-normal text-primary transition-transform duration-300 group-open:rotate-45"
+                  aria-hidden="true"
+                >
+                  +
+                </span>
+              </summary>
+              <p class="max-w-2xl pt-4 text-sm leading-6 text-muted-foreground">{faq.answer}</p>
+            </details>
+          ))
+        }
+      </div>
+    </div>
+  </div>
+</section>
+
+<script type="application/ld+json" set:html={JSON.stringify({
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": faqs.map((faq) => ({
+    "@type": "Question",
+    "name": faq.question,
+    "acceptedAnswer": {
+      "@type": "Answer",
+      "text": faq.answer,
+    },
+  })),
+})} />

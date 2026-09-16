@@ -1,0 +1,22 @@
+---
+import { ArrowUpRight, MessageCircle } from "lucide-astro";
+
+const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20vim%20pela%20JLA%20Code%20e%20quero%20conversar%20sobre%20um%20projeto.";
+---
+
+<a
+  href={whatsappUrl}
+  target="_blank"
+  rel="noopener noreferrer"
+  aria-label="Abrir conversa no WhatsApp"
+  title="Falar pelo WhatsApp"
+  data-motion-magnetic
+  class="group fixed bottom-4 right-4 z-40 inline-flex items-center gap-2 rounded-full bg-primary px-3 py-3 text-primary-foreground shadow-[0_12px_32px_rgba(183,243,77,0.24)] transition-shadow hover:shadow-[0_14px_40px_rgba(183,243,77,0.4)] sm:bottom-6 sm:right-6 sm:px-4"
+>
+  <span class="relative flex h-5 w-5 items-center justify-center">
+    <span class="absolute inset-0 rounded-full bg-primary-foreground/30 opacity-0 transition-opacity group-hover:animate-ping group-hover:opacity-100"></span>
+    <MessageCircle class="relative h-5 w-5" />
+  </span>
+  <span class="hidden text-sm font-bold sm:inline">WhatsApp</span>
+  <ArrowUpRight class="h-4 w-4 transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+</a>

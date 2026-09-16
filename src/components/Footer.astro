@@ -1,13 +1,20 @@
 ---
-import BrandMark from "./BrandMark.astro";
+import { Image } from 'astro:assets';
 import { ChevronDown } from "lucide-astro";
 
 const currentYear = new Date().getFullYear();
 ---
 
-<footer class="bg-background border-t border-border/40">
+<footer data-motion-reveal class="bg-background border-t border-border/40">
   <div class="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
-    <BrandMark />
+    <Image
+      src="/logo_jla.webp"
+      quality={75}
+      loading="lazy"
+      alt="Logo JLA Code"
+      width="168px"
+      height="50px"
+    />
     <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
       desenvolvimento com intenção © {currentYear}
     </p>
@@ -15,7 +22,7 @@ const currentYear = new Date().getFullYear();
       <a
         href="https://www.linkedin.com/in/joseluisaldrighi/"
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         class="text-xs font-semibold text-muted-foreground hover:text-primary transition-colors"
       >
         LinkedIn

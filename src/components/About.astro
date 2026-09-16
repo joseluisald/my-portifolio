@@ -2,10 +2,10 @@
 import { Cpu, ExternalLink } from "lucide-astro";
 ---
 
-<section id="sobre" class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
+<section id="sobre" data-motion-section class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
   <div class="grid items-center gap-14 lg:grid-cols-[0.9fr_1.1fr] lg:gap-24">
     <!-- Profile Card Badge -->
-    <div class="relative mx-auto w-full max-w-md">
+    <div data-motion-tilt data-motion-spotlight class="relative mx-auto w-full max-w-md">
       <div class="absolute -left-4 -top-4 h-20 w-20 border-l border-t border-primary/50"></div>
       <div class="absolute -bottom-4 -right-4 h-20 w-20 border-b border-r border-primary/50"></div>
       <div class="relative aspect-[4/5] overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-[#172319] via-card to-[#0b0f0c] p-6 sm:p-8 shadow-xl">
@@ -36,7 +36,7 @@ import { Cpu, ExternalLink } from "lucide-astro";
     </div>
 
     <!-- Text Bio & LinkedIn -->
-    <div>
+    <div data-motion-reveal>
       <p class="section-kicker">/ por trás do código</p>
       <h2 class="mt-5 max-w-2xl font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl lg:text-6xl">
         Técnica para construir. <span class="text-primary">Curiosidade</span> para ir além.
@@ -51,6 +51,7 @@ import { Cpu, ExternalLink } from "lucide-astro";
         href="https://www.linkedin.com/in/joseluisaldrighi/"
         target="_blank"
         rel="noreferrer"
+        data-motion-magnetic
         class="mt-8 inline-flex items-center gap-2 border-b border-primary pb-2 text-sm font-bold text-foreground transition-colors hover:text-primary"
       >
         Conheça minha trajetória <ExternalLink class="h-4 w-4" />

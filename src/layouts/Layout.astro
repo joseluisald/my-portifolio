@@ -8,9 +8,9 @@ interface Props {
 }
 
 const {
-  title = "JLA Code — Código que resolve",
-  description = "JLA Code — Desenvolvimento web e suporte técnico para transformar ideias em soluções digitais que funcionam de verdade — do primeiro clique ao próximo nível. ",
-  image = "/og-image.png",
+  title = "JLA Code | Criação de Sites e Soluções Digitais",
+  description = "Transforme ideias em soluções digitais que funcionam de verdade. A JLA Code oferece desenvolvimento web e suporte técnico especializado. Fale com a gente.",
+  image = "/og-image.webp",
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
@@ -67,28 +67,35 @@ const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
-      "@type": "WebSite",
-      "name": "JLA Code — Código que resolve",
-      "description": "JLA Code — Desenvolvimento web e suporte técnico para transformar ideias em soluções digitais que funcionam de verdade — do primeiro clique ao próximo nível. ",
+      "@type": "ProfessionalService",
+      "name": "JLA Code",
+      "description": description,
       "url": "https://jlacode.com.br",
-      "image": "https://jlacode.com.br/og-image.png",
-      "publisher": {
-        "@type": "Organization",
-        "name": "Minha Empresa",
-        "logo": {
-          "@type": "ImageObject",
-          "url": "https://jlacode.com.br/logo.png"
-        }
+      "image": "https://jlacode.com.br/og-image.webp",
+      "founder": {
+        "@type": "Person",
+        "name": "José Luis Aldrighi",
+        "url": "https://www.linkedin.com/in/joseluisaldrighi/",
+        "jobTitle": "Desenvolvedor web e técnico em informática"
       },
-      "potentialAction": {
-        "@type": "SearchAction",
-        "target": "https://jlacode.com.br/search?q={search_term_string}",
-        "query-input": "required name=search_term_string"
-      }
+      "areaServed": "BR",
+      "serviceType": ["Desenvolvimento web", "Suporte técnico", "Estratégia digital"]
     })} />
 
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
+    <a
+      href="#conteudo-principal"
+      class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-primary-foreground"
+    >
+      Pular para o conteúdo
+    </a>
     <slot />
+
+    <script>
+      import { initMotion } from "../scripts/motion";
+
+      initMotion();
+    </script>
   </body>
 </html>

@@ -2,23 +2,28 @@
 const processSteps = [
   {
     number: "01",
-    title: "Entender",
-    description: "A conversa começa pelo seu contexto, desafio e pelo que você quer colocar de pé.",
+    title: "Diagnosticar",
+    description: "A conversa começa pelo seu contexto, desafio e pelo que precisa mudar de verdade.",
   },
   {
     number: "02",
-    title: "Construir",
-    description: "Desenhamos a solução certa e transformamos o plano em algo funcional, bonito e simples de usar.",
+    title: "Planejar",
+    description: "Você recebe um caminho claro, com escopo, prioridades, prazo e próximos passos.",
   },
   {
     number: "03",
+    title: "Construir",
+    description: "Transformamos o plano em algo funcional, bonito, rápido e simples de usar.",
+  },
+  {
+    number: "04",
     title: "Evoluir",
-    description: "Você não fica sozinho depois da entrega. A tecnologia acompanha o ritmo do seu negócio.",
+    description: "A entrega não encerra a parceria. A tecnologia acompanha o ritmo do seu negócio.",
   },
 ];
 ---
 
-<section id="processo" class="border-y border-border bg-card/50">
+<section id="processo" data-motion-section class="border-y border-border bg-card/50">
   <div class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
     <div class="flex flex-col justify-between gap-8 sm:flex-row sm:items-end">
       <div>
@@ -32,12 +37,12 @@ const processSteps = [
       </p>
     </div>
 
-    <div class="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-3">
+    <div data-motion-list class="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 xl:grid-cols-4">
       {
         processSteps.map((step) => (
-          <article class="bg-background p-7 sm:p-9 lg:p-10">
+          <article data-motion-item data-motion-tilt data-motion-spotlight class="bg-background p-7 sm:p-9 lg:p-10">
             <span class="font-mono text-xs text-primary">{step.number}</span>
-            <h3 class="mt-16 font-display text-3xl font-semibold tracking-[-0.05em]">
+            <h3 class="mt-12 font-display text-3xl font-semibold tracking-[-0.05em] lg:mt-16">
               {step.title}
             </h3>
             <p class="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">

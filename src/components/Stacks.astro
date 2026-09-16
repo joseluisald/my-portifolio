@@ -20,10 +20,10 @@ const stackGroups = [
 ];
 ---
 
-<section id="stacks" class="border-t border-border bg-card/40">
+<section id="stacks" data-motion-section class="border-t border-border bg-card/40">
   <div class="mx-auto max-w-7xl px-5 py-24 sm:px-8 lg:px-10 lg:py-32">
     <div class="grid items-start gap-14 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
-      <div>
+      <div data-motion-reveal>
         <p class="section-kicker">/ stacks que domino</p>
         <h2 class="mt-5 max-w-md font-display text-4xl font-semibold leading-[1.02] tracking-[-0.06em] sm:text-5xl">
           A ferramenta muda. O cuidado com a <span class="text-primary">entrega</span> fica.
@@ -33,10 +33,10 @@ const stackGroups = [
         </p>
       </div>
 
-      <div class="space-y-0 divide-y divide-border border-y border-border">
+      <div data-motion-list class="space-y-0 divide-y divide-border border-y border-border">
         {
           stackGroups.map((group, index) => (
-            <div class="py-8 sm:py-9">
+            <div data-motion-item data-motion-spotlight class="py-8 sm:py-9">
               <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between sm:gap-8">
                 <div class="min-w-[145px]">
                   <span class="font-mono text-xs text-primary">0{index + 1}</span>

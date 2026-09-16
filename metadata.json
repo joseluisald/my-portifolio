@@ -1,6 +1,6 @@
 {
-  "name": "JLA Code — Código que resolve",
-  "description": "JLA Code — desenvolvimento web e suporte técnico para transformar ideias em soluções digitais que funcionam.",
+  "name": "JLA Code | Criação de Sites e Soluções Digitais",
+  "description": "Transforme ideias em soluções digitais que funcionam de verdade. A JLA Code oferece desenvolvimento web e suporte técnico especializado. Fale com a gente.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

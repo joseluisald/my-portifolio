@@ -1,11 +1,12 @@
 ---
-import BrandMark from "./BrandMark.astro";
+import { Image } from 'astro:assets';
 import { ArrowUpRight, Menu, X } from "lucide-astro";
 
 const navItems = [
   { label: "Serviços", id: "servicos" },
   { label: "Stacks", id: "stacks" },
   { label: "Como funciona", id: "processo" },
+  { label: "Dúvidas", id: "duvidas" },
   { label: "Sobre", id: "sobre" },
 ];
 
@@ -13,12 +14,20 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
 ---
 
 <header
+  data-motion-header
   x-data="{ mobileMenuOpen: false }"
   class="sticky top-0 z-50 border-b border-border/60 bg-background/85 backdrop-blur-xl"
 >
   <div class="mx-auto flex h-[76px] max-w-7xl items-center justify-between px-5 sm:px-8 lg:px-10">
-    <a href="#inicio" aria-label="Ir para o início" class="transition-opacity hover:opacity-90">
-      <BrandMark />
+    <a data-motion-magnetic href="#inicio" aria-label="Ir para o início" class="transition-opacity hover:opacity-90">
+      <Image
+        src="/logo_jla.webp"
+        quality={75}
+        loading="eager"
+        alt="Logo JLA Code"
+        width="168px"
+        height="50px"
+      />
     </a>
 
     <!-- Desktop Navigation -->
@@ -40,13 +49,14 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
       <a
         href={whatsappUrl}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         class="inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
       >
         WhatsApp <ArrowUpRight class="h-3.5 w-3.5" />
       </a>
       <a
         href="#contato"
+        data-motion-magnetic
         class="group inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
       >
         Vamos conversar
@@ -58,6 +68,8 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
     <button
       type="button"
       aria-label="Alternar menu"
+      aria-controls="menu-mobile"
+      :aria-expanded="mobileMenuOpen"
       @click="mobileMenuOpen = !mobileMenuOpen"
       class="rounded-lg border border-border p-2 text-foreground md:hidden"
     >
@@ -79,6 +91,7 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
     x-transition:leave="transition ease-in duration-150"
     x-transition:leave-start="opacity-100 translate-y-0"
     x-transition:leave-end="opacity-0 -translate-y-2"
+    id="menu-mobile"
     class="border-t border-border/60 bg-background px-5 py-5 md:hidden"
     style="display: none;"
     aria-label="Menu mobile"
@@ -98,7 +111,7 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
       <a
         href={whatsappUrl}
         target="_blank"
-        rel="noreferrer"
+        rel="noopener noreferrer"
         class="mt-3 inline-flex items-center justify-center gap-2 rounded-full bg-primary px-4 py-3 text-sm font-semibold text-primary-foreground"
       >
         Falar no WhatsApp <ArrowUpRight class="h-4 w-4" />
