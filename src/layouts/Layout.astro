@@ -13,7 +13,9 @@ const {
   image = "/og-image.webp",
 } = Astro.props;
 
-const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
+const siteURL = "https://jlacode.com.br";
+const canonicalURL = new URL(Astro.url.pathname, siteURL);
+const socialImageURL = new URL(image, siteURL);
 ---
 
 <!doctype html>
@@ -23,66 +25,60 @@ const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="theme-color" content="#101411" />
     <meta name="description" content={description} />
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
-    <meta property="og:type" content="website" />
-
-    <title>{title}</title>
-    <meta name="title" content={title} />
-    <meta name="description" content={description} />
+    <meta
+      name="keywords"
+      content="criação de sites, desenvolvimento web, sites responsivos, performance web, suporte técnico, estratégia digital, manutenção de sites, soluções digitais, desenvolvedor web, JLA Code"
+    />
+    <meta name="author" content="José Luis Aldrighi" />
     <meta name="robots" content="index, follow" />
 
-    <link rel="canonical" href={canonicalURL} />
+    <title>{title}</title>
+    <link rel="canonical" href={canonicalURL.toString()} />
 
     <!-- Favicon & Mobile App Icons -->
-    <link rel="icon" type="image/x-icon" href="/meuapp-favicon-512x512.png">
+    <link rel="icon" type="image/png" href="/jla-favicon-512x512.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="manifest" href="/site.webmanifest">
-    <meta name="theme-color" content="#bbf150">
     <meta name="msapplication-TileColor" content="#bbf150">
 
-    <!-- Open Graph / Facebook -->
+    <!-- Open Graph -->
+    <meta property="og:locale" content="pt_BR" />
     <meta property="og:type" content="website" />
-    <meta property="og:url" content={canonicalURL} />
+    <meta property="og:url" content={canonicalURL.toString()} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
-    <meta property="og:image" content={image} />
+    <meta property="og:image" content={socialImageURL.toString()} />
+    <meta property="og:image:type" content="image/webp" />
+    <meta property="og:image:alt" content="JLA Code — desenvolvimento web e suporte técnico" />
     <meta property="og:site_name" content="JLA Code" />
 
     <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
-    <meta name="twitter:image" content={image} />
+    <meta name="twitter:image" content={socialImageURL.toString()} />
+    <meta name="twitter:image:alt" content="JLA Code — desenvolvimento web e suporte técnico" />
     <meta name="twitter:site" content="@jlacode" />
-
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
-      rel="stylesheet"
-    />
 
     <script type="application/ld+json" set:html={JSON.stringify({
       "@context": "https://schema.org",
       "@type": "ProfessionalService",
       "name": "JLA Code",
       "description": description,
-      "url": "https://jlacode.com.br",
-      "image": "https://jlacode.com.br/og-image.webp",
+      "url": siteURL,
+      "image": socialImageURL.toString(),
       "founder": {
         "@type": "Person",
         "name": "José Luis Aldrighi",
-        "url": "https://www.linkedin.com/in/joseluisaldrighi/",
+        "url": "https://www.linkedin.com/in/joseluisaldrighi",
         "jobTitle": "Desenvolvedor web e técnico em informática"
       },
       "areaServed": "BR",
       "serviceType": ["Desenvolvimento web", "Suporte técnico", "Estratégia digital"]
     })} />
 
-    <!-- Google tag (gtag.js) -->
     <!-- Google tag (gtag.js) -->
     <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-EBTQGSW7KV"></script>
     <script is:inline>
@@ -96,17 +92,12 @@ const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
     <a
-      href="#conteudo-principal"
+      href="#home"
       class="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-[100] focus:rounded-full focus:bg-primary focus:px-4 focus:py-3 focus:text-sm focus:font-bold focus:text-primary-foreground"
     >
       Pular para o conteúdo
     </a>
     <slot />
 
-    <script>
-      import { initMotion } from "../scripts/motion";
-
-      initMotion();
-    </script>
   </body>
 </html>

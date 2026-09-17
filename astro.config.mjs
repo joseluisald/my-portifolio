@@ -2,8 +2,10 @@ import { defineConfig } from "astro/config";
 import tailwindcss from "@tailwindcss/vite";
 import alpinejs from "@astrojs/alpinejs";
 import compress from "astro-compress";
+import sitemap from "@astrojs/sitemap";
 
 export default defineConfig({
+  site: "https://jlacode.com.br",
   vite: {
     plugins: [tailwindcss()],
     build: {
@@ -18,7 +20,8 @@ export default defineConfig({
     inlineStylesheets: "always",
   },
   integrations: [
-    alpinejs(),
+    alpinejs({ entrypoint: "./src/scripts/main.ts" }),
+    sitemap(),
     compress({
       HTML: false,
       CSS: true,

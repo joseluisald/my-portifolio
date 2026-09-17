@@ -2,18 +2,20 @@
 import { Image } from 'astro:assets';
 import { ChevronDown } from "lucide-astro";
 
+import logo from "@/assets/logo_jla.webp";
+
 const currentYear = new Date().getFullYear();
 ---
 
 <footer data-motion-reveal class="bg-background border-t border-border/40">
   <div class="mx-auto flex max-w-7xl flex-col gap-7 px-5 py-8 sm:px-8 md:flex-row md:items-center md:justify-between lg:px-10">
     <Image
-      src="/logo_jla.webp"
+      src={logo}
       quality={75}
-      loading="lazy"
+      loading="eager"
       alt="Logo JLA Code"
-      width="168px"
-      height="50px"
+      width={168}
+      height={50}
     />
     <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground">
       desenvolvimento com intenção © {currentYear}

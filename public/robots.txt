@@ -7,6 +7,7 @@ Disallow: /checkout/session/
 Disallow: /*?*utm_*
 Allow: /api/public/
 Allow: /static/media/
+Allow: /
 
 # --------------------------------------------------------
 # Proteção & Controle de Crawlers de Inteligência Artificial / LLMs
@@ -17,7 +18,7 @@ Disallow: /
 
 # ChatGPT Browsing (Acessos sob demanda quando um usuário pede ao ChatGPT para ler sua página.)
 User-agent: ChatGPT-User
-Allow: /
+Disallow: /
 
 # Google Extended (Crawler de treinamento para modelos Gemini e Vertex AI do Google.)
 User-agent: Google-Extended
@@ -29,11 +30,11 @@ Disallow: /
 
 # Claude Realtime Web (Requisições ao vivo do assistente Claude para pesquisar páginas na web.)
 User-agent: Claude-Web
-Allow: /
+Disallow: /
 
 # Perplexity AI Bot (Buscador inteligente da Perplexity para indexação e respostas com fontes.)
 User-agent: PerplexityBot
-Allow: /
+Disallow: /
 
 # Common Crawl (CCBot) (Base pública massiva usada por centenas de IAs para treinamento geral.)
 User-agent: CCBot
@@ -56,4 +57,4 @@ User-agent: Meta-ExternalAgent
 Disallow: /
 
 # Localização do Sitemap Oficial
-Sitemap: https://meusite.com/sitemap.xml
+Sitemap: https://jlacode.com.br/sitemap-index.xml
