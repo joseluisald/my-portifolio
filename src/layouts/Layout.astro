@@ -82,6 +82,16 @@ const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
       "serviceType": ["Desenvolvimento web", "Suporte técnico", "Estratégia digital"]
     })} />
 
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBTQGSW7KV"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-EBTQGSW7KV');
+    </script>
+
   </head>
   <body class="min-h-screen overflow-x-hidden bg-background text-foreground selection:bg-primary selection:text-primary-foreground">
     <a
