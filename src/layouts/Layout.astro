@@ -83,8 +83,9 @@ const canonicalURL = new URL(Astro.url.pathname, "https://jlacode.com.br");
     })} />
 
     <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-EBTQGSW7KV"></script>
-    <script>
+    <!-- Google tag (gtag.js) -->
+    <script is:inline async src="https://www.googletagmanager.com/gtag/js?id=G-EBTQGSW7KV"></script>
+    <script is:inline>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
