@@ -1,0 +1,1102 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import logo from "@/assets/logo_jla.webp";
+import {
+  ArrowLeft,
+  ArrowUpRight,
+  Check,
+  CheckCircle2,
+  Clock,
+  Copy,
+  Download,
+  ExternalLink,
+  Filter,
+  Layers,
+  Link as LinkIcon,
+  Lock,
+  LogOut,
+  Mail,
+  MessageCircle,
+  Phone,
+  RefreshCw,
+  Search,
+  Server,
+  ShieldAlert,
+  ShieldCheck,
+  Sparkles,
+  Trash2,
+  User,
+  Zap,
+} from "lucide-astro";
+---
+
+<Layout
+  title="Painel Administrativo | JLA Code"
+  description="Gestão de briefings e orçamentos recebidos na JLA Code."
+>
+  <div
+    x-data="adminDashboard()"
+    x-init="init()"
+    class="min-h-screen bg-background text-foreground selection:bg-primary selection:text-primary-foreground"
+  >
+    <!-- ============================================== -->
+    <!-- TELA 1: LOGIN MOCADO (SE NÃO AUTENTICADO) -->
+    <!-- ============================================== -->
+    <div
+      x-show="!isAuthenticated"
+      x-transition.opacity.duration.300ms
+      class="flex min-h-screen items-center justify-center p-4 sm:p-6"
+    >
+      <!-- Atmospheric Background -->
+      <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+        <div class="absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[800px] rounded-full bg-primary/10 blur-[140px]"></div>
+        <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(183,243,77,0.035)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+      </div>
+
+      <div class="w-full max-w-md">
+        <div class="rounded-2xl border border-primary/25 bg-card/90 p-7 pt-9 shadow-2xl backdrop-blur-xl sm:p-9 sm:pt-11">
+          <!-- Logo & Header -->
+          <div class="flex flex-col items-center justify-center text-center">
+            <a href="/" class="flex items-center justify-center transition-opacity hover:opacity-90">
+              <Image
+                src={logo}
+                quality={75}
+                loading="eager"
+                alt="Logo JLA Code"
+                width={160}
+                height={48}
+                class="mx-auto block"
+              />
+            </a>
+            <div class="mt-6 inline-flex items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-1.5 font-mono text-[11px] font-bold uppercase tracking-[0.16em] text-primary shadow-[0_0_12px_rgba(183,243,77,0.12)]">
+              <Lock class="h-3.5 w-3.5 text-primary" />
+              <span>Acesso Administrativo</span>
+            </div>
+            <h1 class="mt-4 font-display text-2xl font-semibold text-foreground">
+              Painel de Briefings
+            </h1>
+            <p class="mt-1.5 max-w-xs text-xs leading-relaxed text-muted-foreground">
+              Entre com suas credenciais para acessar os orçamentos recebidos.
+            </p>
+          </div>
+
+          <!-- Mensagem de Erro -->
+          <div
+            x-show="errorMessage"
+            x-transition.opacity
+            class="mt-5 rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-xs text-destructive flex items-center gap-2"
+          >
+            <ShieldAlert class="h-4 w-4 shrink-0" />
+            <span x-text="errorMessage"></span>
+          </div>
+
+          <!-- Form de Login -->
+          <form @submit.prevent="login()" class="mt-6 space-y-4">
+            <div>
+              <label class="block text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground">
+                E-mail ou Usuário
+              </label>
+              <div class="mt-1.5 relative">
+                <input
+                  type="text"
+                  x-model="loginInput"
+                  placeholder="seu-email@jlacode.com.br"
+                  required
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-xs font-mono font-medium uppercase tracking-wider text-muted-foreground">
+                Senha de Acesso
+              </label>
+              <div class="mt-1.5 relative">
+                <input
+                  type="password"
+                  x-model="passwordInput"
+                  placeholder="Sua senha"
+                  required
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-3.5 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              :disabled="loadingAuth"
+              class="w-full mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-3 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(183,243,77,0.3)] transition-all hover:brightness-105 active:scale-[0.99] disabled:opacity-50"
+            >
+              <span x-show="!loadingAuth">Entrar no Painel</span>
+              <span x-show="loadingAuth" class="flex items-center gap-2">
+                <RefreshCw class="h-4 w-4 animate-spin" /> Verificando...
+              </span>
+            </button>
+          </form>
+
+          <div class="mt-6 text-center">
+            <a href="/" class="text-xs text-muted-foreground hover:text-primary transition-colors">
+              &larr; Voltar para o site principal
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ============================================== -->
+    <!-- TELA 2: DASHBOARD ADMINISTRATIVO (AUTENTICADO) -->
+    <!-- ============================================== -->
+    <div x-show="isAuthenticated" x-transition.opacity.duration.300ms class="space-y-6">
+      <!-- Navbar Admin -->
+      <header class="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl">
+        <div class="mx-auto flex h-[72px] max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center gap-4">
+            <a href="/" class="flex items-center gap-2">
+              <Image
+                src={logo}
+                quality={75}
+                loading="eager"
+                alt="Logo JLA Code"
+                width={130}
+                height={40}
+              />
+            </a>
+            <span class="hidden sm:inline-block h-5 w-px bg-border/60"></span>
+            <div class="hidden sm:flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs font-semibold text-primary">
+              <Server class="h-3.5 w-3.5" />
+              briefings.json ativo
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3">
+            <!-- Usuário logado -->
+            <div class="hidden md:flex items-center gap-2 rounded-xl border border-border/70 bg-card/60 px-3 py-1.5 text-xs">
+              <div class="flex h-6 w-6 items-center justify-center rounded-full bg-primary/20 text-primary font-bold text-[11px]">
+                JA
+              </div>
+              <span class="font-medium text-foreground" x-text="currentUser.name"></span>
+            </div>
+
+            <a
+              href="/orcamento"
+              target="_blank"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-card px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+            >
+              <ExternalLink class="h-3.5 w-3.5" />
+              <span class="hidden sm:inline">Página de Briefing</span>
+            </a>
+
+            <button
+              type="button"
+              @click="logout()"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-border/80 bg-background px-3 py-1.5 text-xs font-medium text-muted-foreground hover:text-destructive hover:border-destructive/40 transition-colors"
+            >
+              <LogOut class="h-3.5 w-3.5" />
+              <span>Sair</span>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Conteúdo Principal -->
+      <main class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4">
+          <!-- Total -->
+          <div class="rounded-2xl border border-border/70 bg-card/60 p-4 sm:p-5 backdrop-blur-sm">
+            <span class="font-mono text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Total Requests
+            </span>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="font-display text-2xl font-bold text-foreground sm:text-3xl" x-text="briefings.length"></span>
+              <span class="text-xs text-muted-foreground">briefings</span>
+            </div>
+          </div>
+
+          <!-- Pending -->
+          <div class="rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 sm:p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-semibold uppercase tracking-wider text-amber-300">
+                Pending
+              </span>
+              <span class="flex h-2 w-2 rounded-full bg-amber-400 animate-ping"></span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="font-display text-2xl font-bold text-amber-300 sm:text-3xl" x-text="countByStatus('Pending')"></span>
+              <span class="text-xs text-amber-300/70">pendentes</span>
+            </div>
+          </div>
+
+          <!-- In Progress -->
+          <div class="rounded-2xl border border-blue-500/30 bg-blue-500/10 p-4 sm:p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-semibold uppercase tracking-wider text-blue-300">
+                In Progress
+              </span>
+              <span class="flex h-2 w-2 rounded-full bg-blue-400"></span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="font-display text-2xl font-bold text-blue-300 sm:text-3xl" x-text="countByStatus('In Progress')"></span>
+              <span class="text-xs text-blue-300/70">em andamento</span>
+            </div>
+          </div>
+
+          <!-- Completed -->
+          <div class="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 sm:p-5 backdrop-blur-sm">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-xs font-semibold uppercase tracking-wider text-emerald-300">
+                Completed
+              </span>
+              <span class="flex h-2 w-2 rounded-full bg-emerald-400"></span>
+            </div>
+            <div class="mt-2 flex items-baseline gap-2">
+              <span class="font-display text-2xl font-bold text-emerald-300 sm:text-3xl" x-text="countByStatus('Completed')"></span>
+              <span class="text-xs text-emerald-300/70">concluídos</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- GERADOR DE LINK PERSONALIZADO PARA ENVIAR AO CLIENTE -->
+        <div class="rounded-2xl border border-primary/25 bg-card/75 p-5 backdrop-blur-sm shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 border-b border-border/50 pb-3">
+            <div class="flex items-center gap-2.5">
+              <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary/15 text-primary">
+                <LinkIcon class="h-4 w-4" />
+              </div>
+              <div>
+                <h3 class="font-display text-sm font-semibold text-foreground">
+                  Gerador de Link de Briefing para Cliente
+                </h3>
+                <p class="text-xs text-muted-foreground">
+                  Crie um link exclusivo com nome e telefone do lead para enviar na conversa do WhatsApp.
+                </p>
+              </div>
+            </div>
+            <span class="rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 font-mono text-[10px] text-primary self-start sm:self-auto">
+              Link Personalizado /orcamento
+            </span>
+          </div>
+
+          <div class="mt-4 grid gap-3 sm:grid-cols-2">
+            <div>
+              <label class="block text-[11px] font-mono uppercase text-muted-foreground">Nome do Cliente</label>
+              <input
+                type="text"
+                x-model="genNome"
+                placeholder="Ex: Carlos Silva"
+                class="mt-1 w-full rounded-xl border border-border bg-background/90 px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+            <div>
+              <label class="block text-[11px] font-mono uppercase text-muted-foreground">WhatsApp com DDD</label>
+              <input
+                type="text"
+                x-model="genTel"
+                placeholder="Ex: 11987654321"
+                class="mt-1 w-full rounded-xl border border-border bg-background/90 px-3.5 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+              />
+            </div>
+          </div>
+
+          <div class="mt-3 flex flex-col sm:flex-row items-center gap-2">
+            <input
+              type="text"
+              readonly
+              :value="generatedClientLink"
+              class="w-full rounded-xl border border-border bg-background/70 px-3.5 py-2 font-mono text-xs text-primary select-all"
+            />
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                type="button"
+                @click="copyGeneratedClientLink()"
+                class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 shrink-0 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground shadow-[0_0_15px_rgba(183,243,77,0.2)] hover:brightness-105 active:scale-[0.99] transition-all"
+              >
+                <Copy class="h-3.5 w-3.5" />
+                <span x-text="linkCopied ? 'Link Copiado!' : 'Copiar Link'"></span>
+              </button>
+              <a
+                :href="openWhatsappWithLink"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-1.5 shrink-0 rounded-xl border border-border bg-background px-3.5 py-2 text-xs font-semibold text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+                title="Abrir WhatsApp para enviar"
+              >
+                <MessageCircle class="h-3.5 w-3.5 text-primary" />
+                <span class="hidden md:inline">Enviar no WhatsApp</span>
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de Filtros e Ferramentas -->
+        <div class="flex flex-col gap-3 rounded-2xl border border-border/70 bg-card/60 p-4 backdrop-blur-sm sm:flex-row sm:items-center sm:justify-between">
+          <!-- Campo de Busca -->
+          <div class="relative flex-1 max-w-md">
+            <Search class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              x-model="searchTerm"
+              placeholder="Buscar por cliente, telefone, empresa ou objetivo..."
+              class="w-full rounded-xl border border-border bg-background/80 pl-9 pr-3 py-2 text-xs text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+            />
+          </div>
+
+          <!-- Filtro por Status em Chips -->
+          <div class="flex flex-wrap items-center gap-1.5">
+            <template x-for="st in statusOptions" :key="st.key">
+              <button
+                type="button"
+                @click="selectedFilter = st.key"
+                class="rounded-lg px-2.5 py-1 font-mono text-[11px] transition-all"
+                :class="selectedFilter === st.key ? 'bg-primary text-primary-foreground font-bold shadow-sm' : 'bg-background/80 text-muted-foreground hover:text-foreground border border-border/60'"
+              >
+                <span x-text="st.label"></span>
+                <span
+                  class="ml-1 opacity-75"
+                  x-text="st.key === 'todos' ? briefings.length : countByStatus(st.key)"
+                ></span>
+              </button>
+            </template>
+          </div>
+
+          <!-- Ações de Backup e Refresh -->
+          <div class="flex items-center gap-2">
+            <button
+              type="button"
+              @click="loadBriefings()"
+              :disabled="loadingList"
+              class="inline-flex items-center gap-1.5 rounded-lg border border-border bg-background px-3 py-1.5 text-xs text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors"
+              title="Recarregar briefings do arquivo JSON"
+            >
+              <RefreshCw class="h-3.5 w-3.5" :class="loadingList ? 'animate-spin' : ''" />
+              <span class="hidden lg:inline">Recarregar</span>
+            </button>
+
+            <button
+              type="button"
+              @click="downloadJsonFile()"
+              class="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-all"
+              title="Baixar arquivo briefings.json completo"
+            >
+              <Download class="h-3.5 w-3.5" />
+              <span>Baixar JSON</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- LISTAGEM DE BRIEFINGS -->
+        <div class="space-y-3">
+          <!-- Loading State -->
+          <div x-show="loadingList" class="rounded-2xl border border-border/60 bg-card/40 p-12 text-center">
+            <RefreshCw class="h-6 w-6 animate-spin mx-auto text-primary" />
+            <p class="mt-2 text-xs font-mono text-muted-foreground">Lendo arquivo data/briefings.json...</p>
+          </div>
+
+          <!-- Empty State -->
+          <div
+            x-show="!loadingList && filteredBriefings.length === 0"
+            class="rounded-2xl border border-dashed border-border/80 bg-card/30 p-12 text-center"
+          >
+            <div class="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-secondary text-muted-foreground">
+              <Layers class="h-6 w-6" />
+            </div>
+            <h3 class="mt-4 font-display text-lg font-semibold text-foreground">
+              Nenhum briefing encontrado
+            </h3>
+            <p class="mt-1 text-xs text-muted-foreground max-w-sm mx-auto">
+              Nenhum orçamento corresponde aos filtros selecionados ou ainda não há cadastros no JSON.
+            </p>
+            <a
+              href="/orcamento"
+              target="_blank"
+              class="mt-4 inline-flex items-center gap-2 rounded-xl bg-primary px-4 py-2 text-xs font-bold text-primary-foreground hover:brightness-105"
+            >
+              Criar briefing de teste no /orcamento
+            </a>
+          </div>
+
+          <!-- TABELA DE DADOS COM COLUNA DE STATUS (DESKTOP) -->
+          <div class="hidden md:block overflow-x-auto rounded-2xl border border-border/80 bg-card/60 backdrop-blur-sm shadow-sm">
+            <table class="w-full text-left text-xs border-collapse">
+              <thead class="border-b border-border/70 bg-card/90 font-mono text-[11px] uppercase tracking-wider text-muted-foreground">
+                <tr>
+                  <th class="py-3.5 px-4 font-semibold text-primary">Status</th>
+                  <th class="py-3.5 px-4 font-semibold">Cliente & Contato</th>
+                  <th class="py-3.5 px-4 font-semibold">Objetivo do Site</th>
+                  <th class="py-3.5 px-4 font-semibold">Escopo & Páginas</th>
+                  <th class="py-3.5 px-4 font-semibold">Recebido Em</th>
+                  <th class="py-3.5 px-4 text-right font-semibold">Ações</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-border/50">
+                <template x-for="b in filteredBriefings" :key="b.id">
+                  <tr class="transition-colors hover:bg-card/90 group">
+                    <!-- COLUNA DE STATUS -->
+                    <td class="py-4 px-4 align-middle whitespace-nowrap">
+                      <div class="flex items-center gap-2">
+                        <span
+                          class="flex h-2 w-2 rounded-full shrink-0"
+                          :class="{
+                            'bg-amber-400': b.status === 'Pending',
+                            'bg-blue-400 animate-pulse': b.status === 'In Progress',
+                            'bg-emerald-400': b.status === 'Completed'
+                          }"
+                        ></span>
+                        <select
+                          :value="b.status"
+                          @change="updateStatus(b.id, $event.target.value)"
+                          class="rounded-lg border px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider focus:outline-none cursor-pointer transition-colors shadow-sm"
+                          :class="getStatusBadgeClass(b.status)"
+                        >
+                          <option value="Pending" class="bg-card text-foreground font-semibold">Pending</option>
+                          <option value="In Progress" class="bg-card text-foreground font-semibold">In Progress</option>
+                          <option value="Completed" class="bg-card text-foreground font-semibold">Completed</option>
+                        </select>
+                      </div>
+                    </td>
+
+                    <!-- CLIENTE & CONTATO -->
+                    <td class="py-4 px-4 align-middle">
+                      <div class="font-display font-semibold text-sm text-foreground" x-text="b.cliente.nome"></div>
+                      <div class="flex items-center gap-2 mt-0.5 text-muted-foreground text-xs">
+                        <a
+                          :href="getClientWhatsappUrl(b)"
+                          target="_blank"
+                          class="font-mono text-primary hover:underline flex items-center gap-1"
+                          title="Abrir WhatsApp com o cliente"
+                        >
+                          <Phone class="h-3 w-3" />
+                          <span x-text="b.cliente.telefone || 'Sem telefone'"></span>
+                        </a>
+                        <span x-show="b.cliente.empresa" class="text-muted-foreground/60">•</span>
+                        <span x-show="b.cliente.empresa" class="font-mono text-[11px]" x-text="b.cliente.empresa"></span>
+                      </div>
+                    </td>
+
+                    <!-- OBJETIVO DO SITE -->
+                    <td class="py-4 px-4 align-middle max-w-xs">
+                      <span class="inline-block rounded-md border border-border/70 bg-background/60 px-2 py-0.5 text-xs text-foreground font-medium truncate max-w-[240px]" x-text="b.form.objetivoPrincipal"></span>
+                      <span x-show="b.form.dominioNome" class="block font-mono text-[11px] text-primary/80 mt-1 truncate" x-text="b.form.dominioNome"></span>
+                    </td>
+
+                    <!-- ESCOPO & PÁGINAS -->
+                    <td class="py-4 px-4 align-middle whitespace-nowrap">
+                      <div class="text-muted-foreground text-xs" x-text="b.form.quantidadePaginas"></div>
+                      <div class="text-[11px] text-muted-foreground/80 font-mono mt-0.5" x-text="`⚡ ${b.form.prazoUrgencia}`"></div>
+                    </td>
+
+                    <!-- DATA -->
+                    <td class="py-4 px-4 align-middle whitespace-nowrap font-mono text-xs text-muted-foreground" x-text="formatDate(b.createdAt)"></td>
+
+                    <!-- AÇÕES -->
+                    <td class="py-4 px-4 align-middle text-right whitespace-nowrap">
+                      <div class="inline-flex items-center gap-1.5">
+                        <a
+                          :href="getClientWhatsappUrl(b)"
+                          target="_blank"
+                          class="inline-flex items-center gap-1 rounded-lg bg-primary/10 border border-primary/30 px-2.5 py-1.5 text-xs font-semibold text-primary hover:bg-primary hover:text-primary-foreground transition-all"
+                          title="Chamar cliente no WhatsApp"
+                        >
+                          <MessageCircle class="h-3.5 w-3.5" />
+                          <span class="hidden xl:inline">WhatsApp</span>
+                        </a>
+
+                        <button
+                          type="button"
+                          @click="openDetails(b)"
+                          class="rounded-lg border border-border bg-background px-2.5 py-1.5 text-xs font-medium text-foreground hover:bg-secondary transition-colors"
+                          title="Ver briefing completo"
+                        >
+                          Detalhes
+                        </button>
+
+                        <button
+                          type="button"
+                          @click="copyBriefingText(b)"
+                          class="rounded-lg border border-border bg-background p-1.5 text-muted-foreground hover:text-primary transition-colors"
+                          title="Copiar texto do briefing"
+                        >
+                          <Copy class="h-3.5 w-3.5" />
+                        </button>
+
+                        <button
+                          type="button"
+                          @click="deleteRecord(b.id, b.cliente.nome)"
+                          class="rounded-lg border border-border bg-background p-1.5 text-muted-foreground hover:text-destructive transition-colors"
+                          title="Excluir briefing"
+                        >
+                          <Trash2 class="h-3.5 w-3.5" />
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- CARDS RESPONSIVOS (MOBILE) -->
+          <div class="md:hidden space-y-3">
+            <template x-for="b in filteredBriefings" :key="b.id">
+              <div class="group relative overflow-hidden rounded-2xl border border-border/80 bg-card/60 p-4 backdrop-blur-sm space-y-3">
+                <!-- Coluna de Status e Nome no Mobile -->
+                <div class="flex items-center justify-between gap-2 border-b border-border/50 pb-2.5">
+                  <span class="font-mono text-[10px] uppercase tracking-wider text-muted-foreground">Status:</span>
+                  <div class="flex items-center gap-2">
+                    <span
+                      class="flex h-2 w-2 rounded-full shrink-0"
+                      :class="{
+                        'bg-amber-400': b.status === 'Pending',
+                        'bg-blue-400 animate-pulse': b.status === 'In Progress',
+                        'bg-emerald-400': b.status === 'Completed'
+                      }"
+                    ></span>
+                    <select
+                      :value="b.status"
+                      @change="updateStatus(b.id, $event.target.value)"
+                      class="rounded-lg border px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider focus:outline-none cursor-pointer transition-colors shadow-sm"
+                      :class="getStatusBadgeClass(b.status)"
+                    >
+                      <option value="Pending" class="bg-card text-foreground">Pending</option>
+                      <option value="In Progress" class="bg-card text-foreground">In Progress</option>
+                      <option value="Completed" class="bg-card text-foreground">Completed</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <h3 class="font-display text-base font-semibold text-foreground" x-text="b.cliente.nome"></h3>
+                  <div class="flex items-center gap-2 text-xs text-muted-foreground mt-0.5">
+                    <span class="font-mono text-primary" x-text="b.cliente.telefone"></span>
+                    <span x-show="b.cliente.empresa" x-text="`• ${b.cliente.empresa}`"></span>
+                  </div>
+                  <div class="mt-2 text-xs text-foreground font-medium" x-text="b.form.objetivoPrincipal"></div>
+                  <div class="mt-1 flex items-center justify-between font-mono text-[11px] text-muted-foreground">
+                    <span x-text="b.form.quantidadePaginas"></span>
+                    <span x-text="formatDate(b.createdAt)"></span>
+                  </div>
+                </div>
+
+                <!-- Ações Mobile -->
+                <div class="flex items-center justify-between gap-2 pt-2 border-t border-border/40">
+                  <a
+                    :href="getClientWhatsappUrl(b)"
+                    target="_blank"
+                    class="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 border border-primary/30 px-3 py-1.5 text-xs font-semibold text-primary"
+                  >
+                    <MessageCircle class="h-3.5 w-3.5" />
+                    <span>WhatsApp</span>
+                  </a>
+
+                  <div class="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      @click="openDetails(b)"
+                      class="rounded-lg border border-border bg-background px-3 py-1.5 text-xs font-medium text-foreground"
+                    >
+                      Ver Detalhes
+                    </button>
+                    <button
+                      type="button"
+                      @click="deleteRecord(b.id, b.cliente.nome)"
+                      class="rounded-lg border border-border bg-background p-1.5 text-muted-foreground hover:text-destructive"
+                    >
+                      <Trash2 class="h-3.5 w-3.5" />
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </main>
+
+      <!-- ============================================== -->
+      <!-- MODAL DE DETALHES COMPLETOS DO BRIEFING -->
+      <!-- ============================================== -->
+      <div
+        x-show="showDetailModal && selectedBriefing"
+        x-transition.opacity.duration.250ms
+        class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+        style="display: none;"
+      >
+        <div
+          @click.outside="showDetailModal = false"
+          class="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto rounded-2xl border border-primary/30 bg-card p-6 sm:p-8 shadow-2xl"
+        >
+          <!-- Header Modal -->
+          <div class="flex items-start justify-between border-b border-border/60 pb-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="font-mono text-xs text-muted-foreground uppercase">Status:</span>
+                <select
+                  :value="selectedBriefing?.status"
+                  @change="updateStatus(selectedBriefing.id, $event.target.value)"
+                  class="rounded-lg border px-2.5 py-1 font-mono text-[11px] font-bold tracking-wider focus:outline-none cursor-pointer transition-colors shadow-sm"
+                  :class="selectedBriefing ? getStatusBadgeClass(selectedBriefing.status) : ''"
+                >
+                  <option value="Pending" class="bg-card text-foreground">Pending</option>
+                  <option value="In Progress" class="bg-card text-foreground">In Progress</option>
+                  <option value="Completed" class="bg-card text-foreground">Completed</option>
+                </select>
+                <span class="font-mono text-xs text-muted-foreground" x-text="selectedBriefing ? formatDate(selectedBriefing.createdAt) : ''"></span>
+              </div>
+              <h2 class="mt-2 font-display text-2xl font-bold text-foreground" x-text="selectedBriefing?.cliente.nome"></h2>
+              <div class="mt-1 flex items-center gap-3 text-xs text-muted-foreground">
+                <span class="text-primary font-mono" x-text="selectedBriefing?.cliente.telefone"></span>
+                <span x-show="selectedBriefing?.cliente.empresa" x-text="`• ${selectedBriefing?.cliente.empresa}`"></span>
+              </div>
+            </div>
+
+            <button
+              type="button"
+              @click="showDetailModal = false"
+              class="rounded-lg p-1.5 text-muted-foreground hover:text-foreground"
+            >
+              ✕
+            </button>
+          </div>
+
+          <!-- Conteúdo em 4 Blocos -->
+          <div class="mt-6 space-y-6 text-sm" x-show="selectedBriefing">
+            <!-- Bloco 1: Objetivo & Referências -->
+            <div class="rounded-xl border border-border/70 bg-background/70 p-4 space-y-2.5">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                1. Objetivo & Referências
+              </h4>
+              <div>
+                <span class="text-muted-foreground text-xs block">Objetivo Principal:</span>
+                <strong class="text-foreground" x-text="selectedBriefing?.form.objetivoPrincipal"></strong>
+                <span class="text-xs text-muted-foreground block mt-0.5" x-show="selectedBriefing?.form.objetivoOutro" x-text="`Detalhe: ${selectedBriefing?.form.objetivoOutro}`"></span>
+              </div>
+              <div class="pt-2 border-t border-border/40">
+                <span class="text-muted-foreground text-xs block">Referências de Sites:</span>
+                <p class="text-foreground whitespace-pre-wrap font-mono text-xs mt-1 bg-card/60 p-2 rounded-lg" x-text="selectedBriefing?.form.referenciasSites || 'Nenhuma informada'"></p>
+              </div>
+              <div class="pt-2 border-t border-border/40">
+                <span class="text-muted-foreground text-xs block">Concorrentes no Setor:</span>
+                <p class="text-foreground whitespace-pre-wrap font-mono text-xs mt-1 bg-card/60 p-2 rounded-lg" x-text="selectedBriefing?.form.concorrentes || 'Nenhum informado'"></p>
+              </div>
+            </div>
+
+            <!-- Bloco 2: Estrutura & Funcionalidades -->
+            <div class="rounded-xl border border-border/70 bg-background/70 p-4 space-y-2.5">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                2. Estrutura & Funcionalidades
+              </h4>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <span class="text-muted-foreground text-xs block">Quantidade de Páginas:</span>
+                  <strong class="text-foreground" x-text="selectedBriefing?.form.quantidadePaginas"></strong>
+                  <span class="text-xs text-muted-foreground block mt-0.5" x-show="selectedBriefing?.form.paginasDetalhes" x-text="`Lista: ${selectedBriefing?.form.paginasDetalhes}`"></span>
+                </div>
+                <div>
+                  <span class="text-muted-foreground text-xs block">Vendas / Meio de Pagamento:</span>
+                  <strong class="text-foreground" x-text="selectedBriefing?.form.tipoPagamento"></strong>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-border/40">
+                <span class="text-muted-foreground text-xs block">Recursos & Integrações Solicitados:</span>
+                <div class="mt-1.5 flex flex-wrap gap-1.5">
+                  <template x-for="f in (selectedBriefing?.form.funcionalidades || [])" :key="f">
+                    <span class="rounded-md border border-primary/30 bg-primary/10 px-2 py-1 font-mono text-xs text-primary" x-text="f"></span>
+                  </template>
+                  <span
+                    class="rounded-md border border-border bg-card px-2 py-1 font-mono text-xs text-foreground"
+                    x-show="selectedBriefing?.form.funcionalidadeOutra"
+                    x-text="`Outra: ${selectedBriefing?.form.funcionalidadeOutra}`"
+                  ></span>
+                </div>
+              </div>
+
+              <div class="pt-2 border-t border-border/40">
+                <span class="text-muted-foreground text-xs block">Idiomas:</span>
+                <strong class="text-foreground" x-text="selectedBriefing?.form.idiomas"></strong>
+              </div>
+            </div>
+
+            <!-- Bloco 3: Conteúdo & Design -->
+            <div class="rounded-xl border border-border/70 bg-background/70 p-4 space-y-2.5">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                3. Conteúdo & Design
+              </h4>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <span class="text-muted-foreground text-xs block">Identidade Visual (Logo / Cores):</span>
+                  <strong class="text-foreground text-xs block mt-1" x-text="selectedBriefing?.form.identidadeVisual"></strong>
+                </div>
+                <div>
+                  <span class="text-muted-foreground text-xs block">Textos (Copywriting) e Fotos:</span>
+                  <strong class="text-foreground text-xs block mt-1" x-text="selectedBriefing?.form.conteudoCopy"></strong>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bloco 4: Infraestrutura & Prazos -->
+            <div class="rounded-xl border border-border/70 bg-background/70 p-4 space-y-2.5">
+              <h4 class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                4. Infraestrutura & Prazos
+              </h4>
+              <div class="grid sm:grid-cols-2 gap-3">
+                <div>
+                  <span class="text-muted-foreground text-xs block">Domínio & Hospedagem:</span>
+                  <strong class="text-foreground text-xs block mt-1" x-text="selectedBriefing?.form.dominioHospedagem"></strong>
+                  <span class="text-xs text-primary font-mono block mt-0.5" x-show="selectedBriefing?.form.dominioNome" x-text="`Domínio: ${selectedBriefing?.form.dominioNome}`"></span>
+                </div>
+                <div>
+                  <span class="text-muted-foreground text-xs block">Prazo / Urgência:</span>
+                  <strong class="text-foreground text-xs block mt-1" x-text="selectedBriefing?.form.prazoUrgencia"></strong>
+                  <span class="text-xs text-muted-foreground block mt-0.5" x-show="selectedBriefing?.form.prazoDataEspecifica" x-text="`Data limite: ${selectedBriefing?.form.prazoDataEspecifica}`"></span>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-border/40">
+                <span class="text-muted-foreground text-xs block">Manutenção Mensal:</span>
+                <strong class="text-foreground text-xs block mt-1" x-text="selectedBriefing?.form.manutencaoMensal"></strong>
+              </div>
+              <div class="pt-2 border-t border-border/40" x-show="selectedBriefing?.form.observacoes">
+                <span class="text-muted-foreground text-xs block">Observações do Cliente:</span>
+                <p class="text-foreground text-xs mt-1 bg-card/60 p-2.5 rounded-lg italic" x-text="selectedBriefing?.form.observacoes"></p>
+              </div>
+            </div>
+
+            <!-- Campo de Anotações Internas do José -->
+            <div class="rounded-xl border border-primary/40 bg-card/90 p-4 space-y-2">
+              <div class="flex items-center justify-between">
+                <span class="font-mono text-xs font-bold uppercase tracking-wider text-primary">
+                  📝 Anotações Internas (Salvo no JSON)
+                </span>
+                <button
+                  type="button"
+                  @click="saveInternalNotes()"
+                  class="rounded-lg bg-primary px-3 py-1 font-mono text-[11px] font-bold text-primary-foreground hover:brightness-105"
+                >
+                  <span x-text="savingNotes ? 'Salvando...' : 'Salvar Nota'"></span>
+                </button>
+              </div>
+              <textarea
+                rows="3"
+                x-model="selectedBriefingNotes"
+                placeholder="Ex: Liguei dia 20/10. Fechamos em R$ 3.500 em 2x. Início previsto na próxima segunda..."
+                class="w-full rounded-lg border border-border bg-background p-2.5 text-xs text-foreground focus:border-primary focus:outline-none"
+              ></textarea>
+            </div>
+          </div>
+
+          <!-- Footer Modal -->
+          <div class="mt-6 flex flex-col sm:flex-row items-center justify-between gap-3 border-t border-border/60 pt-4">
+            <a
+              :href="selectedBriefing ? getClientWhatsappUrl(selectedBriefing) : '#'"
+              target="_blank"
+              class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-5 py-2.5 text-xs font-bold text-primary-foreground hover:brightness-105"
+            >
+              <MessageCircle class="h-4 w-4" />
+              Chamar Cliente no WhatsApp
+            </a>
+
+            <div class="flex items-center gap-2 w-full sm:w-auto">
+              <button
+                type="button"
+                @click="copyBriefingText(selectedBriefing)"
+                class="flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-xl border border-border bg-background px-4 py-2.5 text-xs font-medium text-foreground hover:bg-secondary"
+              >
+                <Copy class="h-3.5 w-3.5" />
+                <span>Copiar Texto</span>
+              </button>
+              <button
+                type="button"
+                @click="showDetailModal = false"
+                class="rounded-xl border border-border px-4 py-2.5 text-xs font-medium text-muted-foreground hover:text-foreground"
+              >
+                Fechar
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</Layout>
+
+<script is:inline>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('adminDashboard', () => ({
+      isAuthenticated: false,
+      loadingAuth: false,
+      loadingList: false,
+      errorMessage: '',
+
+      loginInput: '',
+      passwordInput: '',
+
+      currentUser: {
+        name: 'José Luis Aldrighi',
+        email: '',
+        role: 'Administrador JLA Code'
+      },
+
+      briefings: [],
+      selectedFilter: 'todos',
+      searchTerm: '',
+
+      genNome: '',
+      genTel: '',
+      linkCopied: false,
+
+      showDetailModal: false,
+      selectedBriefing: null,
+      selectedBriefingNotes: '',
+      savingNotes: false,
+
+      statusOptions: [
+        { key: 'todos', label: 'All' },
+        { key: 'Pending', label: 'Pending' },
+        { key: 'In Progress', label: 'In Progress' },
+        { key: 'Completed', label: 'Completed' }
+      ],
+
+      init() {
+        // Verificar se tem sessão salva no localStorage
+        const token = localStorage.getItem('jla_admin_auth_token');
+        if (token) {
+          this.isAuthenticated = true;
+          const savedUser = localStorage.getItem('jla_admin_user');
+          if (savedUser) {
+            try { this.currentUser = JSON.parse(savedUser); } catch (e) {}
+          }
+          this.loadBriefings();
+        }
+      },
+
+      async login() {
+        this.loadingAuth = true;
+        this.errorMessage = '';
+
+        try {
+          const res = await fetch('/api/auth', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              login: this.loginInput,
+              password: this.passwordInput
+            })
+          });
+
+          const data = await res.json();
+          if (data.success) {
+            this.isAuthenticated = true;
+            this.currentUser = data.user;
+            localStorage.setItem('jla_admin_auth_token', data.token);
+            localStorage.setItem('jla_admin_user', JSON.stringify(data.user));
+            this.loadBriefings();
+          } else {
+            this.errorMessage = data.error || 'Credenciais inválidas.';
+          }
+        } catch (err) {
+          this.errorMessage = 'Erro ao conectar ao servidor.';
+        } finally {
+          this.loadingAuth = false;
+        }
+      },
+
+      logout() {
+        this.isAuthenticated = false;
+        localStorage.removeItem('jla_admin_auth_token');
+        localStorage.removeItem('jla_admin_user');
+      },
+
+      async loadBriefings() {
+        this.loadingList = true;
+        try {
+          const res = await fetch('/api/briefings');
+          const data = await res.json();
+          if (data.success && Array.isArray(data.briefings)) {
+            this.briefings = data.briefings;
+          }
+        } catch (err) {
+          console.error('Erro ao buscar briefings:', err);
+        } finally {
+          this.loadingList = false;
+        }
+      },
+
+      get generatedClientLink() {
+        const base = `${window.location.origin}/orcamento`;
+        const q = new URLSearchParams();
+        if (this.genNome && this.genNome.trim()) q.set('nome', this.genNome.trim());
+        if (this.genTel && this.genTel.trim()) q.set('telefone', this.genTel.trim());
+        const qs = q.toString();
+        return qs ? `${base}?${qs}` : base;
+      },
+
+      get openWhatsappWithLink() {
+        const rawPhone = (this.genTel || '').replace(/\D/g, '');
+        const phone = rawPhone ? (rawPhone.length <= 11 ? `55${rawPhone}` : rawPhone) : '';
+        const clientName = this.genNome && this.genNome.trim() ? ` ${this.genNome.trim()}` : '';
+        const msg = encodeURIComponent(`Olá${clientName}! Preparei este link exclusivo para você preencher o briefing do seu novo site na JLA Code: ${this.generatedClientLink}`);
+        return phone ? `https://wa.me/${phone}?text=${msg}` : `https://wa.me/?text=${msg}`;
+      },
+
+      copyGeneratedClientLink() {
+        navigator.clipboard.writeText(this.generatedClientLink).then(() => {
+          this.linkCopied = true;
+          setTimeout(() => { this.linkCopied = false; }, 2500);
+        });
+      },
+
+      get filteredBriefings() {
+        let list = this.briefings;
+
+        // Filtro por status
+        if (this.selectedFilter !== 'todos') {
+          list = list.filter(b => b.status === this.selectedFilter);
+        }
+
+        // Busca textual
+        if (this.searchTerm.trim()) {
+          const q = this.searchTerm.toLowerCase();
+          list = list.filter(b => {
+            const nome = (b.cliente?.nome || '').toLowerCase();
+            const tel = (b.cliente?.telefone || '').toLowerCase();
+            const emp = (b.cliente?.empresa || '').toLowerCase();
+            const obj = (b.form?.objetivoPrincipal || '').toLowerCase();
+            const dom = (b.form?.dominioNome || '').toLowerCase();
+            const notas = (b.notasInternas || '').toLowerCase();
+            return nome.includes(q) || tel.includes(q) || emp.includes(q) || obj.includes(q) || dom.includes(q) || notas.includes(q);
+          });
+        }
+
+        return list;
+      },
+
+      countByStatus(statusKey) {
+        return this.briefings.filter(b => b.status === statusKey).length;
+      },
+
+      getStatusBadgeClass(status) {
+        switch (status) {
+          case 'Pending':
+            return 'bg-amber-500/20 text-amber-300 border-amber-500/40';
+          case 'In Progress':
+            return 'bg-blue-500/20 text-blue-300 border-blue-500/40';
+          case 'Completed':
+            return 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40';
+          default:
+            return 'bg-card text-foreground border-border';
+        }
+      },
+
+      formatDate(isoString) {
+        if (!isoString) return '';
+        try {
+          const date = new Date(isoString);
+          return date.toLocaleDateString('pt-BR', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+        } catch (e) {
+          return isoString;
+        }
+      },
+
+      getClientWhatsappUrl(briefing) {
+        const rawPhone = (briefing.cliente?.telefone || '').replace(/\D/g, '');
+        const phone = rawPhone.length <= 11 ? `55${rawPhone}` : rawPhone;
+        const msg = encodeURIComponent(`Olá ${briefing.cliente?.nome || ''}! Aqui é o José da JLA Code. Recebi seu briefing de orçamento e gostaria de alinhar os detalhes com você.`);
+        return `https://wa.me/${phone}?text=${msg}`;
+      },
+
+      async updateStatus(id, newStatus) {
+        try {
+          const res = await fetch('/api/briefings', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id, status: newStatus })
+          });
+          const data = await res.json();
+          if (data.success) {
+            const idx = this.briefings.findIndex(b => b.id === id);
+            if (idx !== -1) this.briefings[idx].status = newStatus;
+            if (this.selectedBriefing && this.selectedBriefing.id === id) {
+              this.selectedBriefing.status = newStatus;
+            }
+          }
+        } catch (err) {
+          console.error('Erro ao atualizar status:', err);
+        }
+      },
+
+      openDetails(briefing) {
+        this.selectedBriefing = briefing;
+        this.selectedBriefingNotes = briefing.notasInternas || '';
+        this.showDetailModal = true;
+      },
+
+      async saveInternalNotes() {
+        if (!this.selectedBriefing) return;
+        this.savingNotes = true;
+        try {
+          const res = await fetch('/api/briefings', {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              id: this.selectedBriefing.id,
+              notasInternas: this.selectedBriefingNotes
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            this.selectedBriefing.notasInternas = this.selectedBriefingNotes;
+            const idx = this.briefings.findIndex(b => b.id === this.selectedBriefing.id);
+            if (idx !== -1) this.briefings[idx].notasInternas = this.selectedBriefingNotes;
+          }
+        } catch (err) {
+          console.error('Erro ao salvar notas:', err);
+        } finally {
+          this.savingNotes = false;
+        }
+      },
+
+      async deleteRecord(id, nome) {
+        if (!confirm(`Tem certeza que deseja excluir o briefing de "${nome}" do arquivo JSON?`)) {
+          return;
+        }
+
+        try {
+          const res = await fetch(`/api/briefings?id=${id}`, { method: 'DELETE' });
+          const data = await res.json();
+          if (data.success) {
+            this.briefings = this.briefings.filter(b => b.id !== id);
+            if (this.showDetailModal && this.selectedBriefing?.id === id) {
+              this.showDetailModal = false;
+            }
+          }
+        } catch (err) {
+          alert('Erro ao excluir briefing.');
+        }
+      },
+
+      copyBriefingText(briefing) {
+        if (!briefing) return;
+        const text = briefing.resumoFormatado || JSON.stringify(briefing, null, 2);
+        navigator.clipboard.writeText(text).then(() => {
+          alert('Texto do briefing copiado para a área de transferência!');
+        });
+      },
+
+      downloadJsonFile() {
+        const dataStr = 'data:text/json;charset=utf-8,' + encodeURIComponent(JSON.stringify(this.briefings, null, 2));
+        const downloadAnchor = document.createElement('a');
+        downloadAnchor.setAttribute('href', dataStr);
+        downloadAnchor.setAttribute('download', `briefings_jlacode_${new Date().toISOString().slice(0, 10)}.json`);
+        document.body.appendChild(downloadAnchor);
+        downloadAnchor.click();
+        downloadAnchor.remove();
+      }
+    }));
+  });
+</script>

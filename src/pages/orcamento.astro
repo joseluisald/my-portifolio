@@ -1,0 +1,1206 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import logo from "@/assets/logo_jla.webp";
+import {
+  ArrowLeft,
+  ArrowRight,
+  Check,
+  CheckCircle2,
+  Copy,
+  ExternalLink,
+  HelpCircle,
+  Layers,
+  MessageCircle,
+  Palette,
+  Send,
+  ShieldCheck,
+  Sparkles,
+  User,
+  Phone,
+  Server,
+  Code2,
+  Calendar,
+  Zap,
+} from "lucide-astro";
+
+const whatsappNumber = "5553981302738";
+---
+
+<Layout
+  title="Briefing de Projeto Web | JLA Code"
+  description="Responda algumas perguntas rápidas sobre os objetivos, funcionalidades e expectativas do seu novo site para elaborarmos uma proposta personalizada e precisa."
+>
+  <!-- Background Atmospheric Mesh -->
+  <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden="true">
+    <div class="absolute -top-40 left-1/2 -translate-x-1/2 h-[500px] w-[900px] rounded-full bg-primary/10 blur-[140px]"></div>
+    <div class="absolute top-1/3 -left-40 h-[400px] w-[400px] rounded-full bg-blue-500/5 blur-[120px]"></div>
+    <div class="absolute bottom-10 right-0 h-[400px] w-[400px] rounded-full bg-primary/5 blur-[130px]"></div>
+    <div class="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(183,243,77,0.035)_1px,transparent_1px)] [background-size:24px_24px]"></div>
+  </div>
+
+  <!-- Header Minimalista -->
+  <header class="sticky top-0 z-40 border-b border-border/60 bg-background/85 backdrop-blur-xl">
+    <div class="mx-auto flex h-[72px] max-w-5xl items-center justify-between px-4 sm:px-6 lg:px-8">
+      <a href="/" class="flex items-center gap-3 transition-opacity hover:opacity-90">
+        <Image
+          src={logo}
+          quality={75}
+          loading="eager"
+          alt="Logo JLA Code"
+          width={140}
+          height={42}
+        />
+      </a>
+
+      <div class="flex items-center gap-3">
+        <a
+          href="/"
+          class="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card/60 px-3.5 py-1.5 text-xs font-medium text-muted-foreground transition-colors hover:border-primary/40 hover:text-foreground"
+        >
+          <ArrowLeft class="h-3.5 w-3.5" />
+          <span class="hidden sm:inline">Voltar ao site principal</span>
+          <span class="sm:hidden">Início</span>
+        </a>
+
+        <a
+          href={`https://wa.me/${whatsappNumber}?text=Ol%C3%A1%20Jos%C3%A9%2C%20estou%20preenchendo%20o%20briefing%20e%20fiquei%20com%20uma%20d%C3%BAvida.`}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/30 px-3.5 py-1.5 text-xs font-semibold text-primary transition-all hover:bg-primary hover:text-primary-foreground"
+        >
+          <MessageCircle class="h-3.5 w-3.5" />
+          <span class="hidden sm:inline">Tirar dúvida</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <main
+    x-data="briefingForm()"
+    x-init="init()"
+    class="mx-auto max-w-4xl px-4 py-8 sm:px-6 sm:py-14 lg:px-8"
+  >
+    <!-- Card de Boas-Vindas Personalizado -->
+    <div class="relative mb-8 overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-b from-card/90 to-card/50 p-6 backdrop-blur-md sm:p-8">
+      <div class="absolute right-0 top-0 -mr-10 -mt-10 h-32 w-32 rounded-full bg-primary/10 blur-2xl"></div>
+
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div>
+          <div class="inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-3 py-1 font-mono text-xs font-bold uppercase tracking-[0.14em] text-primary">
+            <Sparkles class="h-3.5 w-3.5 text-primary" />
+            <span x-show="clienteNome" x-text="`Briefing Exclusivo • ${clienteNome}`"></span>
+            <span x-show="!clienteNome">Briefing de Projeto Web</span>
+          </div>
+
+          <h1 class="mt-3 font-display text-2xl font-semibold leading-tight tracking-[-0.05em] text-foreground sm:text-4xl">
+            <span x-show="clienteNome">
+              Olá, <span class="text-primary" x-text="clienteNome"></span>! Vamos planejar seu novo site?
+            </span>
+            <span x-show="!clienteNome">
+              Vamos construir a solução certa para o seu negócio?
+            </span>
+          </h1>
+
+          <p class="mt-2.5 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base">
+            Cada pergunta abaixo serve para entender o objetivo, o escopo e o investimento ideal para o seu projeto. Leva menos de 4 minutos para preencher.
+          </p>
+        </div>
+
+        <!-- Indicador de Status VIP / Dados do Cliente -->
+        <div class="flex flex-col gap-2 rounded-xl border border-border/70 bg-background/70 p-3.5 text-xs sm:min-w-[220px]">
+          <div class="flex items-center justify-between text-muted-foreground">
+            <span class="font-mono text-[10px] uppercase tracking-wider">Identificação</span>
+            <button
+              type="button"
+              @click="showClientModal = true"
+              class="text-primary hover:underline font-mono text-[11px]"
+            >
+              Editar dados
+            </button>
+          </div>
+          <div class="font-semibold text-foreground flex items-center gap-1.5">
+            <User class="h-3.5 w-3.5 text-primary shrink-0" />
+            <span class="truncate" x-text="clienteNome || 'Cliente não identificado'"></span>
+          </div>
+          <div class="text-muted-foreground flex items-center gap-1.5" x-show="clienteTelefone">
+            <Phone class="h-3.5 w-3.5 text-muted-foreground shrink-0" />
+            <span class="font-mono text-[11px]" x-text="clienteTelefone"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barra de Progresso com Etapas -->
+      <div class="mt-8 border-t border-border/50 pt-6">
+        <div class="flex items-center justify-between text-xs mb-2">
+          <span class="font-mono text-muted-foreground uppercase tracking-wider">
+            Etapa <strong class="text-primary" x-text="currentStep"></strong> de 4: <span class="text-foreground font-medium" x-text="stepTitles[currentStep - 1]"></span>
+          </span>
+          <span class="font-mono font-bold text-primary" x-text="`${Math.round((currentStep / 4) * 100)}%`"></span>
+        </div>
+        <div class="h-2 w-full overflow-hidden rounded-full bg-secondary/50">
+          <div
+            class="h-full bg-gradient-to-r from-primary/80 to-primary transition-all duration-500 ease-out"
+            :style="`width: ${(currentStep / 4) * 100}%`"
+          ></div>
+        </div>
+
+        <!-- Navegador de passos em abas -->
+        <div class="mt-4 grid grid-cols-4 gap-2 text-center text-xs">
+          <template x-for="(title, idx) in stepTitles" :key="idx">
+            <button
+              type="button"
+              @click="goToStep(idx + 1)"
+              class="rounded-lg p-2 transition-all font-mono text-[11px]"
+              :class="{
+                'bg-primary/15 text-primary border border-primary/30 font-bold': currentStep === idx + 1,
+                'bg-card/40 text-muted-foreground hover:text-foreground border border-transparent': currentStep !== idx + 1,
+                'opacity-80': currentStep > idx + 1
+              }"
+            >
+              <div class="flex items-center justify-center gap-1">
+                <span
+                  class="flex h-4 w-4 items-center justify-center rounded-full text-[9px] font-bold"
+                  :class="currentStep > idx + 1 ? 'bg-primary text-primary-foreground' : (currentStep === idx + 1 ? 'bg-primary text-primary-foreground' : 'bg-secondary text-muted-foreground')"
+                  x-text="currentStep > idx + 1 ? '✓' : idx + 1"
+                ></span>
+                <span class="hidden md:inline truncate" x-text="title"></span>
+              </div>
+            </button>
+          </template>
+        </div>
+      </div>
+    </div>
+
+    <!-- FORMULÁRIO MULTI-ETAPAS -->
+    <form @submit.prevent="submitBriefing()" class="space-y-6">
+
+      <!-- ============================================== -->
+      <!-- ETAPA 1: OBJETIVO E REFERÊNCIAS -->
+      <!-- ============================================== -->
+      <div x-show="currentStep === 1" x-transition.opacity.duration.250ms class="space-y-6">
+        <div class="rounded-2xl border border-border/80 bg-card/60 p-6 sm:p-8 backdrop-blur-sm">
+          <div class="flex items-center gap-2.5 text-primary">
+            <Sparkles class="h-5 w-5" />
+            <h2 class="font-display text-xl font-semibold text-foreground sm:text-2xl">
+              1. Objetivo e Referências
+            </h2>
+          </div>
+          <p class="mt-1 text-sm text-muted-foreground">
+            Defina o propósito central do projeto e nos mostre a estética visual que você busca.
+          </p>
+
+          <div class="mt-8 space-y-7">
+            <!-- 1.1 Objetivo Principal -->
+            <div>
+              <label class="block text-sm font-semibold text-foreground">
+                Qual é o objetivo principal do site? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Selecione a opção que melhor resume o papel do site no seu negócio.
+              </p>
+
+              <div class="mt-3.5 grid gap-2.5 sm:grid-cols-2">
+                <template x-for="item in objetivosDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.objetivoPrincipal === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="objetivoPrincipal"
+                      :value="item.title"
+                      x-model="form.objetivoPrincipal"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.objetivoPrincipal === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.objetivoPrincipal === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+
+              <!-- Campo livre se selecionar Outro -->
+              <div class="mt-3" x-show="form.objetivoPrincipal === 'Outro objetivo específico'">
+                <input
+                  type="text"
+                  placeholder="Descreva brevemente o objetivo do seu site..."
+                  x-model="form.objetivoOutro"
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <!-- 1.2 Referências que você gosta -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Você tem referências de 2 ou 3 sites que você gosta?
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Pode ser pelo estilo visual, pelas cores, fluidez ou animações. Isso ajuda a calibrar a expectativa de design.
+              </p>
+              <div class="mt-3">
+                <textarea
+                  rows="3"
+                  x-model="form.referenciasSites"
+                  placeholder="Ex: 
+- https://empresaexemplo.com (gosto da paleta sóbria e tipografia)
+- https://stripe.com (gosto das animações modernas e visual tecnológico)"
+                  class="w-full rounded-xl border border-border/80 bg-background/90 p-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                ></textarea>
+              </div>
+            </div>
+
+            <!-- 1.3 Principais concorrentes -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Quem são seus principais concorrentes?
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Sites ou perfis do seu setor para analisarmos o que eles fazem bem e onde o seu projeto pode se destacar.
+              </p>
+              <div class="mt-3">
+                <textarea
+                  rows="2"
+                  x-model="form.concorrentes"
+                  placeholder="Ex: Concorrente Alpha (www.alpha.com.br), Empresa Beta no Instagram..."
+                  class="w-full rounded-xl border border-border/80 bg-background/90 p-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex items-center justify-between">
+          <span class="text-xs text-muted-foreground">Passo 1 de 4</span>
+          <button
+            type="button"
+            @click="nextStep()"
+            class="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(183,243,77,0.25)] transition-all hover:shadow-[0_0_28px_rgba(183,243,77,0.4)] hover:brightness-105"
+          >
+            Próxima etapa: Estrutura & Funcionalidades
+            <ArrowRight class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ETAPA 2: ESTRUTURA E FUNCIONALIDADES -->
+      <!-- ============================================== -->
+      <div x-show="currentStep === 2" x-transition.opacity.duration.250ms class="space-y-6">
+        <div class="rounded-2xl border border-border/80 bg-card/60 p-6 sm:p-8 backdrop-blur-sm">
+          <div class="flex items-center gap-2.5 text-primary">
+            <Layers class="h-5 w-5" />
+            <h2 class="font-display text-xl font-semibold text-foreground sm:text-2xl">
+              2. Estrutura e Funcionalidades
+            </h2>
+          </div>
+          <p class="mt-1 text-sm text-muted-foreground">
+            O número de páginas e os recursos técnicos integrados são os fatores que mais afetam o escopo e o valor do projeto.
+          </p>
+
+          <div class="mt-8 space-y-7">
+            <!-- 2.1 Quantidade de Páginas -->
+            <div>
+              <label class="block text-sm font-semibold text-foreground">
+                Quantas páginas ou seções você imagina que o site terá? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Ex: Início, Quem Somos, Serviços, Galeria/Portfólio, Contato = 5 páginas.
+              </p>
+
+              <div class="mt-3.5 grid gap-2.5 sm:grid-cols-2">
+                <template x-for="item in paginasDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.quantidadePaginas === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="quantidadePaginas"
+                      :value="item.title"
+                      x-model="form.quantidadePaginas"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.quantidadePaginas === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.quantidadePaginas === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+
+              <!-- Lista específica de páginas se o cliente quiser detalhar -->
+              <div class="mt-3">
+                <input
+                  type="text"
+                  placeholder="Quais páginas planeja ter? (Opcional, ex: Início, Tratamentos, Sobre, Depoimentos, Contato)"
+                  x-model="form.paginasDetalhes"
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <!-- 2.2 Funcionalidades Especiais ou Integrações -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                O site precisará de alguma funcionalidade especial ou integração?
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Marque todas que fizerem sentido para o seu negócio.
+              </p>
+
+              <div class="mt-3.5 grid gap-2.5 sm:grid-cols-2">
+                <template x-for="feat in funcionalidadesDisponiveis" :key="feat.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.funcionalidades.includes(feat.title) ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="checkbox"
+                      :value="feat.title"
+                      x-model="form.funcionalidades"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded border transition-all"
+                      :class="form.funcionalidades.includes(feat.title) ? 'border-primary bg-primary text-primary-foreground' : 'border-border group-hover:border-primary'"
+                    >
+                      <Check class="h-3 w-3 stroke-[3]" x-show="form.funcionalidades.includes(feat.title)" />
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="feat.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="feat.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+
+              <!-- Campo livre para integração extra -->
+              <div class="mt-3">
+                <input
+                  type="text"
+                  placeholder="Outra integração ou sistema específico? (Ex: API interna, Totvs, Bling, Asaas...)"
+                  x-model="form.funcionalidadeOutra"
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <!-- 2.3 Pagamento e Vendas Online -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Se for vender produtos ou serviços, como será o pagamento? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Diga se o fechamento ocorre no próprio site via gateway ou fora dele.
+              </p>
+
+              <div class="mt-3.5 grid gap-2.5 sm:grid-cols-2">
+                <template x-for="item in pagamentosDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.tipoPagamento === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="tipoPagamento"
+                      :value="item.title"
+                      x-model="form.tipoPagamento"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.tipoPagamento === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.tipoPagamento === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+            </div>
+
+            <!-- 2.4 Idiomas -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                O site precisará estar disponível em mais de um idioma? <span class="text-primary">*</span>
+              </label>
+              <div class="mt-3 grid gap-2.5 sm:grid-cols-3">
+                <template x-for="item in idiomasDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-center gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.idiomas === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="idiomas"
+                      :value="item.title"
+                      x-model="form.idiomas"
+                      class="sr-only"
+                    />
+                    <div
+                      class="flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.idiomas === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.idiomas === item.title"></div>
+                    </div>
+                    <span class="text-sm font-medium text-foreground" x-text="item.title"></span>
+                  </label>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex items-center justify-between">
+          <button
+            type="button"
+            @click="prevStep()"
+            class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:bg-secondary transition-colors"
+          >
+            <ArrowLeft class="h-4 w-4" />
+            Voltar
+          </button>
+          <button
+            type="button"
+            @click="nextStep()"
+            class="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(183,243,77,0.25)] transition-all hover:shadow-[0_0_28px_rgba(183,243,77,0.4)] hover:brightness-105"
+          >
+            Próxima etapa: Conteúdo & Design
+            <ArrowRight class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ETAPA 3: CONTEÚDO E DESIGN -->
+      <!-- ============================================== -->
+      <div x-show="currentStep === 3" x-transition.opacity.duration.250ms class="space-y-6">
+        <div class="rounded-2xl border border-border/80 bg-card/60 p-6 sm:p-8 backdrop-blur-sm">
+          <div class="flex items-center gap-2.5 text-primary">
+            <Palette class="h-5 w-5" />
+            <h2 class="font-display text-xl font-semibold text-foreground sm:text-2xl">
+              3. Conteúdo e Design
+            </h2>
+          </div>
+          <p class="mt-1 text-sm text-muted-foreground">
+            A maturidade dos seus materiais visuais e textuais dita a agilidade de entrega do projeto.
+          </p>
+
+          <div class="mt-8 space-y-7">
+            <!-- 3.1 Identidade Visual -->
+            <div>
+              <label class="block text-sm font-semibold text-foreground">
+                Você já tem a identidade visual (logotipo vetorizado, paleta de cores)? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Se ainda não tiver, podemos incluir o design de marca ou ajustes gráficos.
+              </p>
+
+              <div class="mt-3.5 space-y-2.5">
+                <template x-for="item in identidadeDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.identidadeVisual === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="identidadeVisual"
+                      :value="item.title"
+                      x-model="form.identidadeVisual"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.identidadeVisual === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.identidadeVisual === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+            </div>
+
+            <!-- 3.2 Textos (Copy) e Fotos -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Os textos (copy) e as fotos profissionais já estão prontos? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                A criação de textos persuasivos (copywriting) e curadoria de imagens podem ser incluídas no escopo se você precisar.
+              </p>
+
+              <div class="mt-3.5 space-y-2.5">
+                <template x-for="item in conteudoDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.conteudoCopy === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="conteudoCopy"
+                      :value="item.title"
+                      x-model="form.conteudoCopy"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.conteudoCopy === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.conteudoCopy === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Ação -->
+        <div class="flex items-center justify-between">
+          <button
+            type="button"
+            @click="prevStep()"
+            class="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2.5 text-sm font-medium text-foreground hover:bg-secondary transition-colors"
+          >
+            <ArrowLeft class="h-4 w-4" />
+            Voltar
+          </button>
+          <button
+            type="button"
+            @click="nextStep()"
+            class="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-sm font-bold text-primary-foreground shadow-[0_0_20px_rgba(183,243,77,0.25)] transition-all hover:shadow-[0_0_28px_rgba(183,243,77,0.4)] hover:brightness-105"
+          >
+            Próxima etapa: Infraestrutura & Prazos
+            <ArrowRight class="h-4 w-4" />
+          </button>
+        </div>
+      </div>
+
+      <!-- ============================================== -->
+      <!-- ETAPA 4: INFRAESTRUTURA E PRAZOS -->
+      <!-- ============================================== -->
+      <div x-show="currentStep === 4" x-transition.opacity.duration.250ms class="space-y-6">
+        <div class="rounded-2xl border border-border/80 bg-card/60 p-6 sm:p-8 backdrop-blur-sm">
+          <div class="flex items-center gap-2.5 text-primary">
+            <Server class="h-5 w-5" />
+            <h2 class="font-display text-xl font-semibold text-foreground sm:text-2xl">
+              4. Infraestrutura, Prazos & Manutenção
+            </h2>
+          </div>
+          <p class="mt-1 text-sm text-muted-foreground">
+            Últimos detalhes para organizarmos o cronograma e a entrega técnica do projeto.
+          </p>
+
+          <div class="mt-8 space-y-7">
+            <!-- 4.1 Domínio e Hospedagem -->
+            <div>
+              <label class="block text-sm font-semibold text-foreground">
+                Você já tem o domínio registrado (ex: suaempresa.com.br) e hospedagem? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Se não tiver, orientamos ou realizamos toda a contratação e apontamento DNS.
+              </p>
+
+              <div class="mt-3.5 space-y-2.5">
+                <template x-for="item in dominioDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.dominioHospedagem === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="dominioHospedagem"
+                      :value="item.title"
+                      x-model="form.dominioHospedagem"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.dominioHospedagem === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.dominioHospedagem === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+
+              <!-- Campo se já tiver domínio -->
+              <div class="mt-3" x-show="form.dominioHospedagem.includes('Sim') || form.dominioHospedagem.includes('Apenas')">
+                <input
+                  type="text"
+                  placeholder="Qual é o endereço do seu domínio? (Ex: www.suaempresa.com.br)"
+                  x-model="form.dominioNome"
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <!-- 4.2 Data Limite e Urgência -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Existe alguma data limite ou urgência para o site estar no ar? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Projetos com prazo ultra curto exigem alocação prioritária e dedicação exclusiva.
+              </p>
+
+              <div class="mt-3.5 grid gap-2.5 sm:grid-cols-3">
+                <template x-for="item in prazosDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.prazoUrgencia === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="prazoUrgencia"
+                      :value="item.title"
+                      x-model="form.prazoUrgencia"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.prazoUrgencia === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.prazoUrgencia === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+
+              <!-- Data específica opcional -->
+              <div class="mt-3">
+                <input
+                  type="text"
+                  placeholder="Data limite específica desejada (Ex: Até 15 de novembro, ou 'Antes do lançamento da marca')"
+                  x-model="form.prazoDataEspecifica"
+                  class="w-full rounded-xl border border-border/80 bg-background/90 px-4 py-2.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                />
+              </div>
+            </div>
+
+            <!-- 4.3 Plano de Manutenção Mensal -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Você tem interesse em um plano de manutenção mensal após a entrega? <span class="text-primary">*</span>
+              </label>
+              <p class="mt-1 text-xs text-muted-foreground">
+                Para atualizações de segurança, backups automáticos, melhorias de performance e pequenas edições recorrentes.
+              </p>
+
+              <div class="mt-3.5 space-y-2.5">
+                <template x-for="item in manutencaoDisponiveis" :key="item.id">
+                  <label
+                    class="group relative flex cursor-pointer items-start gap-3 rounded-xl border p-3.5 transition-all"
+                    :class="form.manutencaoMensal === item.title ? 'border-primary bg-primary/10 shadow-[0_0_15px_rgba(183,243,77,0.1)]' : 'border-border/60 bg-background/50 hover:border-primary/40 hover:bg-card/80'"
+                  >
+                    <input
+                      type="radio"
+                      name="manutencaoMensal"
+                      :value="item.title"
+                      x-model="form.manutencaoMensal"
+                      class="sr-only"
+                    />
+                    <div
+                      class="mt-0.5 flex h-4 w-4 shrink-0 items-center justify-center rounded-full border transition-all"
+                      :class="form.manutencaoMensal === item.title ? 'border-primary bg-primary' : 'border-border group-hover:border-primary'"
+                    >
+                      <div class="h-1.5 w-1.5 rounded-full bg-primary-foreground" x-show="form.manutencaoMensal === item.title"></div>
+                    </div>
+                    <div>
+                      <span class="block text-sm font-semibold text-foreground" x-text="item.title"></span>
+                      <span class="block text-xs text-muted-foreground mt-0.5" x-text="item.desc"></span>
+                    </div>
+                  </label>
+                </template>
+              </div>
+            </div>
+
+            <!-- 4.4 Observações Adicionais -->
+            <div class="border-t border-border/40 pt-6">
+              <label class="block text-sm font-semibold text-foreground">
+                Alguma observação importante ou requisito que não mencionamos?
+              </label>
+              <div class="mt-3">
+                <textarea
+                  rows="3"
+                  x-model="form.observacoes"
+                  placeholder="Fique à vontade para adicionar qualquer detalhe, expectativa de investimento ou particularidade do seu negócio..."
+                  class="w-full rounded-xl border border-border/80 bg-background/90 p-3.5 text-sm text-foreground placeholder:text-muted-foreground/60 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary"
+                ></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Botões de Envio Final -->
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <button
+            type="button"
+            @click="prevStep()"
+            class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-full border border-border bg-card px-5 py-3 text-sm font-medium text-foreground hover:bg-secondary transition-colors"
+          >
+            <ArrowLeft class="h-4 w-4" />
+            Voltar à etapa anterior
+          </button>
+
+          <button
+            type="submit"
+            class="w-full sm:w-auto group inline-flex items-center justify-center gap-2.5 rounded-full bg-primary px-8 py-3.5 text-base font-bold text-primary-foreground shadow-[0_0_26px_rgba(183,243,77,0.35)] transition-all hover:shadow-[0_0_36px_rgba(183,243,77,0.55)] hover:brightness-105 active:scale-[0.99]"
+          >
+            <Send class="h-4 w-4" />
+            Finalizar & Enviar Briefing no WhatsApp
+          </button>
+        </div>
+      </div>
+    </form>
+
+    <!-- MODAL DE EDIÇÃO DOS DADOS DO CLIENTE (Nome e Telefone) -->
+    <div
+      x-show="showClientModal"
+      x-transition.opacity.duration.200ms
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-sm"
+      style="display: none;"
+    >
+      <div
+        @click.outside="showClientModal = false"
+        class="relative w-full max-w-md rounded-2xl border border-primary/30 bg-card p-6 shadow-2xl"
+      >
+        <div class="flex items-center justify-between border-b border-border/60 pb-3">
+          <h3 class="font-display text-lg font-semibold text-foreground">
+            Seus Dados de Contato
+          </h3>
+          <button
+            type="button"
+            @click="showClientModal = false"
+            class="rounded-lg p-1 text-muted-foreground hover:text-foreground"
+          >
+            ✕
+          </button>
+        </div>
+
+        <div class="mt-4 space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-foreground">Nome completo ou da empresa</label>
+            <input
+              type="text"
+              x-model="clienteNome"
+              placeholder="Ex: Carlos Silva"
+              class="mt-1.5 w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none"
+            />
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-foreground">WhatsApp com DDD</label>
+            <input
+              type="tel"
+              x-model="clienteTelefone"
+              placeholder="Ex: (11) 98765-4321"
+              class="mt-1.5 w-full rounded-xl border border-border bg-background px-3.5 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none"
+            />
+          </div>
+
+          <button
+            type="button"
+            @click="saveClientData()"
+            class="w-full rounded-xl bg-primary py-2.5 text-sm font-bold text-primary-foreground hover:brightness-105"
+          >
+            Salvar e Continuar
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MODAL DE CONFIRMAÇÃO DE SUCESSO -->
+    <div
+      x-show="showSuccessModal"
+      x-transition.opacity.duration.250ms
+      class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 p-4 backdrop-blur-md"
+      style="display: none;"
+    >
+      <div
+        class="relative w-full max-w-lg rounded-2xl border border-primary/40 bg-card p-6 sm:p-8 shadow-2xl text-center"
+      >
+        <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-primary/20 text-primary">
+          <CheckCircle2 class="h-8 w-8" />
+        </div>
+
+        <h3 class="mt-4 font-display text-2xl font-bold text-foreground">
+          Briefing Gerado com Sucesso!
+        </h3>
+
+        <p class="mt-2 text-sm text-muted-foreground leading-relaxed">
+          As informações foram consolidadas e estão prontas para serem enviadas para o WhatsApp da JLA Code.
+        </p>
+
+        <div class="mt-6 flex flex-col gap-3">
+          <a
+            :href="whatsappDirectUrl"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground shadow-[0_0_24px_rgba(183,243,77,0.35)] hover:brightness-105"
+          >
+            <MessageCircle class="h-4 w-4" />
+            Abrir Conversa no WhatsApp Agora
+          </a>
+
+          <button
+            type="button"
+            @click="copyBriefingToClipboard()"
+            class="inline-flex items-center justify-center gap-2 rounded-xl border border-border bg-background/80 px-5 py-2.5 text-xs font-semibold text-foreground hover:bg-secondary transition-colors"
+          >
+            <Copy class="h-3.5 w-3.5 text-primary" />
+            <span x-text="copiedMessage ? 'Copiado para a área de transferência!' : 'Copiar texto completo do briefing'"></span>
+          </button>
+        </div>
+
+        <div class="mt-6 border-t border-border/50 pt-4 text-xs text-muted-foreground">
+          <button
+            type="button"
+            @click="showSuccessModal = false"
+            class="hover:text-primary transition-colors font-mono"
+          >
+            ← Fechar e revisar respostas
+          </button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</Layout>
+
+<script is:inline define:vars={{ whatsappNumber }}>
+  document.addEventListener('alpine:init', () => {
+    Alpine.data('briefingForm', () => ({
+      currentStep: 1,
+      showClientModal: false,
+      showSuccessModal: false,
+      copiedMessage: false,
+
+      clienteNome: '',
+      clienteTelefone: '',
+
+      whatsappDirectUrl: '',
+      formattedBriefingText: '',
+
+      stepTitles: [
+        'Objetivo & Design',
+        'Estrutura & Recursos',
+        'Conteúdo & Identidade',
+        'Infra & Prazos'
+      ],
+
+      // Formulário
+      form: {
+        objetivoPrincipal: 'Captação de leads e pedidos de orçamento',
+        objetivoOutro: '',
+        referenciasSites: '',
+        concorrentes: '',
+        quantidadePaginas: '3 a 5 páginas (Institucional padrão)',
+        paginasDetalhes: '',
+        funcionalidades: ['Botão flutuante de WhatsApp'],
+        funcionalidadeOutra: '',
+        tipoPagamento: 'Não terá venda online (apenas contato/orçamento)',
+        idiomas: 'Apenas Português (Brasil)',
+        identidadeVisual: 'Já tenho logotipo em alta qualidade e paleta de cores definida',
+        conteudoCopy: 'Já tenho os textos e fotos comerciais praticamente prontos',
+        dominioHospedagem: 'Já possuo domínio registrado, mas preciso de hospedagem moderna',
+        dominioNome: '',
+        prazoUrgencia: 'Prazo padrão (2 a 4 semanas)',
+        prazoDataEspecifica: '',
+        manutencaoMensal: 'Sim, quero suporte contínuo, backups e manutenção técnica',
+        observacoes: ''
+      },
+
+      // Opções
+      objetivosDisponiveis: [
+        { id: 1, title: 'Captação de leads e pedidos de orçamento', desc: 'Foco total em conversão, chamadas claras para WhatsApp e formulários ágeis.' },
+        { id: 2, title: 'Página de captura única (Landing Page)', desc: 'Para um produto, serviço exclusivo, infoproduto ou evento específico.' },
+        { id: 3, title: 'Loja virtual / E-commerce', desc: 'Venda direta de produtos físicos ou digitais com carrinho e checkout.' },
+        { id: 4, title: 'Portfólio / Site Institucional', desc: 'Apresentação de autoridade, serviços, histórico e credibilidade da empresa.' },
+        { id: 5, title: 'Blog ou Portal de Notícias', desc: 'Publicação frequente de artigos, guias educativos e otimização para SEO.' },
+        { id: 6, title: 'Outro objetivo específico', desc: 'Aplicação web customizada, dashboard interno ou ferramenta sob demanda.' }
+      ],
+
+      paginasDisponiveis: [
+        { id: 1, title: 'One-page (Tudo em uma única página fluida)', desc: 'Estrutura concisa, ideal para navegação ágil no mobile sem recarregar.' },
+        { id: 2, title: '3 a 5 páginas (Institucional padrão)', desc: 'Ex: Início, Quem Somos, Serviços, Portfólio/Galeria e Contato.' },
+        { id: 3, title: '6 a 10 páginas (Estrutura detalhada)', desc: 'Páginas individuais para cada serviço ou nicho específico.' },
+        { id: 4, title: 'Mais de 10 páginas / Catálogo amplo', desc: 'Projetos de grande porte com arquitetura de informação complexa.' },
+        { id: 5, title: 'Ainda não sei ao certo (Quero recomendação)', desc: 'Avaliamos juntos qual é o tamanho mais eficiente para iniciar.' }
+      ],
+
+      funcionalidadesDisponiveis: [
+        { id: 1, title: 'Botão flutuante de WhatsApp', desc: 'Com mensagem pré-formatada para contato imediato.' },
+        { id: 2, title: 'Sistema de agendamento online', desc: 'Para clientes marcarem reuniões ou serviços em calendário sincronizado.' },
+        { id: 3, title: 'Chat ao vivo / Atendimento automatizado', desc: 'Atendimento inteligente ou FAQ dinâmico na página.' },
+        { id: 4, title: 'Integração com CRM / E-mail Marketing', desc: 'RD Station, HubSpot, ActiveCampaign, Mailchimp, etc.' },
+        { id: 5, title: 'Área restrita com Login para clientes', desc: 'Acesso seguro a materiais, relatórios ou portal de membros.' },
+        { id: 6, title: 'Painel administrativo / CMS para postar blog', desc: 'Liberdade para cadastrar novos artigos sem precisar de código.' },
+        { id: 7, title: 'Calculadora / Simulador de orçamento dinâmico', desc: 'Gera estimativa automática com base nas escolhas do cliente.' },
+        { id: 8, title: 'Integração via API com sistema interno', desc: 'Comunicação em tempo real com ERPs, estoques ou planilhas.' }
+      ],
+
+      pagamentosDisponiveis: [
+        { id: 1, title: 'Não terá venda online (apenas contato/orçamento)', desc: 'Negociações e orçamentos fechados via WhatsApp ou reunião.' },
+        { id: 2, title: 'Catálogo de produtos com pedido no WhatsApp', desc: 'O cliente seleciona os itens e finaliza o pedido em conversa direta.' },
+        { id: 3, title: 'Pagamento instantâneo via Pix integrado', desc: 'QR Code dinâmico com confirmação automática sem taxas pesadas.' },
+        { id: 4, title: 'Checkout completo com Cartão / Mercado Pago / Stripe', desc: 'Processamento online com parcelamento, boleto e antifraude.' }
+      ],
+
+      idiomasDisponiveis: [
+        { id: 1, title: 'Apenas Português (Brasil)' },
+        { id: 2, title: 'Bilíngue (Português + Inglês)' },
+        { id: 3, title: 'Multilíngue (3 ou mais idiomas)' }
+      ],
+
+      identidadeDisponiveis: [
+        { id: 1, title: 'Já tenho logotipo em alta qualidade e paleta de cores definida', desc: 'Arquivos vetorizados (.svg, .ai, .eps, manual de marca).' },
+        { id: 2, title: 'Tenho logotipo em imagem simples (PNG/JPG), preciso adaptar', desc: 'Podemos modernizar ou vetorizar para ter nitidez máxima em telas.' },
+        { id: 3, title: 'Não tenho identidade visual, preciso criar logotipo e paleta do zero', desc: 'Incluiremos a criação da identidade visual completa na proposta.' }
+      ],
+
+      conteudoDisponiveis: [
+        { id: 1, title: 'Já tenho os textos e fotos comerciais praticamente prontos', desc: 'Conteúdo redigido e acervo de fotos da empresa disponível.' },
+        { id: 2, title: 'Tenho fotos/ideias, mas preciso de apoio com textos comerciais', desc: 'Criamos a redação publicitária (copywriting) com foco em venda.' },
+        { id: 3, title: 'Não tenho textos nem fotos profissionais, precisarei de tudo', desc: 'Estruturação completa de copy, bancos de imagem de alta definição e gráficos.' }
+      ],
+
+      dominioDisponiveis: [
+        { id: 1, title: 'Já possuo domínio registrado e hospedagem contratada', desc: 'Basta realizar a implantação e a publicação técnica.' },
+        { id: 2, title: 'Já possuo domínio registrado, mas preciso de hospedagem moderna', desc: 'Configuramos infraestrutura ultrarrápida com CDN e SSL grátis.' },
+        { id: 3, title: 'Não tenho domínio nem hospedagem, preciso de suporte total', desc: 'Orientamos a compra segura no Registro.br e cuidamos de tudo.' }
+      ],
+
+      prazosDisponiveis: [
+        { id: 1, title: 'Sem pressa / Flexível (ritmo normal)', desc: 'Prioridade em polimento e desenvolvimento no fluxo padrão.' },
+        { id: 2, title: 'Prazo padrão (2 a 4 semanas)', desc: 'Cronograma saudável para desenvolvimento, testes e ajustes.' },
+        { id: 3, title: 'Urgente (Data limite crítica)', desc: 'Lançamento com data improrrogável; exige fila de prioridade.' }
+      ],
+
+      manutencaoDisponiveis: [
+        { id: 1, title: 'Sim, quero suporte contínuo, backups e manutenção técnica', desc: 'Garante site sempre rápido, protegido contra invasões e atualizado.' },
+        { id: 2, title: 'Gostaria de conhecer os planos e valores de manutenção', desc: 'Apresentaremos as modalidades de suporte mensal junto à proposta.' },
+        { id: 3, title: 'No momento prefiro apenas a entrega pontual do projeto', desc: 'Entrega final com treinamento básico sem mensalidade fixa.' }
+      ],
+
+      init() {
+        // 1. Ler parâmetros da URL (?nome=...&telefone=... ou ?name=...&phone=...)
+        const params = new URLSearchParams(window.location.search);
+        const urlNome = params.get('nome') || params.get('name') || params.get('cliente') || '';
+        const urlTel = params.get('telefone') || params.get('tel') || params.get('phone') || params.get('whatsapp') || params.get('celular') || '';
+
+        if (urlNome) {
+          this.clienteNome = decodeURIComponent(urlNome.replace(/\+/g, ' '));
+        }
+        if (urlTel) {
+          this.clienteTelefone = decodeURIComponent(urlTel.replace(/\+/g, ' '));
+        }
+
+        // Se não tiver nome, abre o modal de identificação amigável suavemente
+        if (!this.clienteNome) {
+          setTimeout(() => {
+            this.showClientModal = true;
+          }, 600);
+        }
+
+        // Tentar recuperar do localStorage se o usuário tiver começado antes
+        try {
+          const saved = localStorage.getItem('jla_briefing_draft');
+          if (saved) {
+            const parsed = JSON.parse(saved);
+            this.form = { ...this.form, ...parsed.form };
+            if (!this.clienteNome && parsed.clienteNome) this.clienteNome = parsed.clienteNome;
+            if (!this.clienteTelefone && parsed.clienteTelefone) this.clienteTelefone = parsed.clienteTelefone;
+          }
+        } catch (e) {}
+
+        // Salvar progresso automaticamente ao alterar
+        this.$watch('form', () => {
+          this.persistDraft();
+        });
+      },
+
+      persistDraft() {
+        try {
+          localStorage.setItem('jla_briefing_draft', JSON.stringify({
+            form: this.form,
+            clienteNome: this.clienteNome,
+            clienteTelefone: this.clienteTelefone
+          }));
+        } catch (e) {}
+      },
+
+      saveClientData() {
+        this.showClientModal = false;
+        this.persistDraft();
+      },
+
+      goToStep(stepNumber) {
+        this.currentStep = stepNumber;
+        window.scrollTo({ top: 120, behavior: 'smooth' });
+      },
+
+      nextStep() {
+        if (this.currentStep < 4) {
+          this.currentStep++;
+          window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+      },
+
+      prevStep() {
+        if (this.currentStep > 1) {
+          this.currentStep--;
+          window.scrollTo({ top: 120, behavior: 'smooth' });
+        }
+      },
+
+      buildBriefingSummary() {
+        const n = this.clienteNome || 'Não informado';
+        const t = this.clienteTelefone || 'Não informado';
+        const f = this.form;
+
+        const objFinal = f.objetivoPrincipal === 'Outro objetivo específico' && f.objetivoOutro
+          ? `Outro: ${f.objetivoOutro}`
+          : f.objetivoPrincipal;
+
+        const feats = f.funcionalidades.length > 0
+          ? f.funcionalidades.map(x => `  • ${x}`).join('\n')
+          : '  • Nenhuma funcionalidade especial';
+
+        const featExtra = f.funcionalidadeOutra ? `\n  • Extra: ${f.funcionalidadeOutra}` : '';
+        const domInfo = f.dominioNome ? ` (${f.dominioNome})` : '';
+        const prazoData = f.prazoDataEspecifica ? ` (Data limite: ${f.prazoDataEspecifica})` : '';
+
+        return `📋 *NOVO BRIEFING DE PROJETO | JLA CODE*
+
+👤 *CLIENTE*
+• Nome: ${n}
+• WhatsApp: ${t}
+
+🎯 *1. OBJETIVO E REFERÊNCIAS*
+• Objetivo Principal: ${objFinal}
+• Referências visuais: ${f.referenciasSites || 'Nenhuma informada'}
+• Concorrentes: ${f.concorrentes || 'Nenhum informado'}
+
+🧱 *2. ESTRUTURA E FUNCIONALIDADES*
+• Páginas estimadas: ${f.quantidadePaginas}${f.paginasDetalhes ? ` (${f.paginasDetalhes})` : ''}
+• Recursos & Integrações:
+${feats}${featExtra}
+• Pagamento / Vendas: ${f.tipoPagamento}
+• Idiomas: ${f.idiomas}
+
+🎨 *3. CONTEÚDO E DESIGN*
+• Identidade Visual: ${f.identidadeVisual}
+• Textos e Fotos: ${f.conteudoCopy}
+
+⚡ *4. INFRAESTRUTURA E PRAZOS*
+• Domínio & Hospedagem: ${f.dominioHospedagem}${domInfo}
+• Prazo & Urgência: ${f.prazoUrgencia}${prazoData}
+• Manutenção Mensal: ${f.manutencaoMensal}
+• Observações extras: ${f.observacoes || 'Nenhuma'}
+
+---
+Enviado via jlacode.com.br/orcamento`;
+      },
+
+      buildWhatsAppNotification() {
+        const n = this.clienteNome ? this.clienteNome.trim() : 'Cliente';
+        const f = this.form;
+        const obj = f.objetivoPrincipal === 'Outro objetivo específico' && f.objetivoOutro
+          ? f.objetivoOutro
+          : f.objetivoPrincipal;
+
+        return `Olá, José! 👋
+
+Acabei de enviar meu formulário de orçamento pelo site da *JLA Code*.
+
+👤 *Nome:* ${n}
+🎯 *Objetivo:* ${obj}
+
+Já preenchi todos os detalhes e requisitos do projeto. Fico no aguardo do seu contato para avaliarmos a proposta! 🚀`;
+      },
+
+      async submitBriefing() {
+        // Gera o briefing técnico detalhado para salvar no JSON do servidor
+        this.formattedBriefingText = this.buildBriefingSummary();
+
+        // Gera a mensagem curta, elegante e amigável para o WhatsApp
+        const waMessage = this.buildWhatsAppNotification();
+        const encoded = encodeURIComponent(waMessage);
+        this.whatsappDirectUrl = `https://wa.me/${whatsappNumber}?text=${encoded}`;
+
+        // Salvar cópia local
+        this.persistDraft();
+
+        // 1. Gravar imediatamente no arquivo JSON do servidor via API
+        try {
+          await fetch('/api/briefings', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              cliente: {
+                nome: this.clienteNome || 'Cliente Anônimo',
+                telefone: this.clienteTelefone || '',
+              },
+              form: this.form,
+              resumoFormatado: this.formattedBriefingText
+            })
+          });
+        } catch (err) {
+          console.warn('Não foi possível salvar na API em segundo plano:', err);
+        }
+
+        // 2. Abre WhatsApp diretamente
+        window.open(this.whatsappDirectUrl, '_blank');
+
+        // 3. Exibe modal elegante de confirmação
+        this.showSuccessModal = true;
+      },
+
+      copyBriefingToClipboard() {
+        navigator.clipboard.writeText(this.formattedBriefingText).then(() => {
+          this.copiedMessage = true;
+          setTimeout(() => {
+            this.copiedMessage = false;
+          }, 3000);
+        });
+      }
+    }));
+  });
+</script>

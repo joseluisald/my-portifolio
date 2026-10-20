@@ -28,7 +28,7 @@ const metrics = [
       <h1 class="max-w-4xl font-display text-[3.5rem] font-semibold leading-[0.94] tracking-[-0.075em] text-foreground sm:text-7xl lg:text-[6.5rem]">
         Código que <span class="text-primary">resolve.</span>
         <br />
-        Presença que <span class="text-muted-foreground">cresce.</span>
+        Presença que <span class="text-foreground">cresce.</span>
       </h1>
 
       <!-- Subtitle -->
@@ -64,10 +64,12 @@ const metrics = [
             data-motion-item
             class={`flex items-center gap-3 px-3 py-2 sm:px-5 ${
               index > 1 ? "border-t border-border sm:border-t-0" : ""
-            } ${index % 2 === 1 ? "sm:border-l" : ""}`}
+            } ${index > 0 ? "sm:border-l sm:border-border" : ""} ${
+              index % 2 === 1 ? "max-sm:border-l max-sm:border-border" : ""
+            }`}
           >
             <span class="font-mono text-xs text-primary">{number}</span>
-            <span class="text-xs font-semibold uppercase tracking-[0.1em] text-muted-foreground sm:text-sm">
+            <span class="text-xs font-semibold uppercase tracking-[0.1em] text-foreground/85 sm:text-sm">
               {label}
             </span>
           </div>

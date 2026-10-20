@@ -33,17 +33,24 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
     </a>
 
     <!-- Desktop Navigation -->
-    <nav class="hidden items-center gap-8 md:flex" aria-label="Navegação principal">
+    <nav class="hidden items-center gap-7 md:flex" aria-label="Navegação principal">
       {
         navItems.map((item) => (
           <a
-            href={`#${item.id}`}
+            href={`/#${item.id}`}
             class="text-sm font-medium text-muted-foreground transition-colors hover:text-primary"
           >
             {item.label}
           </a>
         ))
       }
+      <a
+        href="/orcamento"
+        class="inline-flex items-center gap-1 text-sm font-semibold text-primary transition-colors hover:text-primary/80"
+      >
+        <span class="inline-block h-1.5 w-1.5 rounded-full bg-primary animate-pulse"></span>
+        Orçamento
+      </a>
     </nav>
 
     <!-- Desktop Actions -->
@@ -102,7 +109,7 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
       {
         navItems.map((item) => (
           <a
-            href={`#${item.id}`}
+            href={`/#${item.id}`}
             @click="mobileMenuOpen = false"
             class="rounded-lg px-3 py-3 text-left text-sm font-medium text-muted-foreground hover:bg-card hover:text-primary transition-colors"
           >
@@ -110,6 +117,14 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
           </a>
         ))
       }
+      <a
+        href="/orcamento"
+        @click="mobileMenuOpen = false"
+        class="rounded-lg px-3 py-3 text-left text-sm font-semibold text-primary hover:bg-card transition-colors flex items-center justify-between"
+      >
+        <span>Solicitar Orçamento</span>
+        <span class="rounded-full bg-primary/20 px-2 py-0.5 text-[10px] font-mono text-primary">Novo</span>
+      </a>
       <a
         href={whatsappUrl}
         target="_blank"
@@ -119,7 +134,7 @@ const whatsappUrl = "https://wa.me/5553981302738?text=Ol%C3%A1%20Jos%C3%A9%2C%20
         Falar no WhatsApp <ArrowUpRight class="h-4 w-4" />
       </a>
       <a
-        href="#contato"
+        href="/#contato"
         @click="mobileMenuOpen = false"
         class="mt-2 inline-flex items-center justify-center gap-2 rounded-full border border-primary/50 px-4 py-3 text-sm font-semibold text-foreground hover:bg-primary hover:text-primary-foreground transition-colors"
       >

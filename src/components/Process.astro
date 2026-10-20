@@ -37,20 +37,43 @@ const processSteps = [
       </p>
     </div>
 
-    <div data-motion-list class="mt-16 grid gap-px overflow-hidden rounded-2xl border border-border bg-border md:grid-cols-2 xl:grid-cols-4">
+    <div
+      data-motion-list
+      class="mt-16 grid grid-cols-1 overflow-hidden rounded-2xl border border-border bg-background md:grid-cols-2 lg:grid-cols-4 shadow-sm"
+    >
       {
-        processSteps.map((step) => (
-          <article data-motion-item data-motion-tilt data-motion-spotlight class="bg-background p-7 sm:p-9 lg:p-10">
-            <span class="font-mono text-xs text-primary">{step.number}</span>
-            <h3 class="mt-12 font-display text-3xl font-semibold tracking-[-0.05em] lg:mt-16">
-              {step.title}
-            </h3>
-            <p class="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">
-              {step.description}
-            </p>
-            <div class="mt-8 h-px w-12 bg-primary"></div>
-          </article>
-        ))
+        processSteps.map((step, index) => {
+          const borderClasses = [
+            // Mobile (1 col): divider between stacked cards
+            index > 0 ? "border-t border-border" : "",
+            // Tablet (md: 2 cols): vertical & horizontal dividers
+            index % 2 === 1 ? "md:border-l md:border-border" : "md:border-l-0",
+            index >= 2 ? "md:border-t md:border-border" : "md:border-t-0",
+            // Desktop (lg: 4 cols): 3 explicit vertical dividers (between 1-2, 2-3, 3-4)
+            "lg:border-t-0",
+            index > 0 ? "lg:border-l lg:border-border" : "lg:border-l-0",
+          ]
+            .filter(Boolean)
+            .join(" ");
+
+          return (
+            <article
+              data-motion-item
+              data-motion-tilt
+              data-motion-spotlight
+              class={`relative bg-background p-7 sm:p-9 lg:p-10 transition-colors ${borderClasses}`}
+            >
+              <span class="font-mono text-xs text-primary">{step.number}</span>
+              <h3 class="mt-12 font-display text-3xl font-semibold tracking-[-0.05em] lg:mt-16 text-foreground">
+                {step.title}
+              </h3>
+              <p class="mt-4 max-w-xs text-sm leading-6 text-muted-foreground">
+                {step.description}
+              </p>
+              <div class="mt-8 h-px w-12 bg-primary"></div>
+            </article>
+          );
+        })
       }
     </div>
   </div>
